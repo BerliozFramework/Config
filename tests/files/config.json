@@ -1,0 +1,14 @@
+{
+  "debug": false,
+  "log": "warning",
+  "var1": {
+    "var1-1": "value1-1",
+    "var1-2": "value1-2",
+    "var1-3": "value1-3"
+  },
+  "var2": "~~var1.var1-1~~+value2",
+  "var3": "~~directory_root~~",
+  "var4": "~~special:directory_root~~",
+  "var5": "~~extends:config.1.json, config.2.json~~",
+  "var6": "~~include:config.1.json~~"
+}
