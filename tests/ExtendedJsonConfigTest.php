@@ -83,4 +83,16 @@ class ExtendedJsonConfigTest extends TestCase
         $this->assertTrue($config->has('var5.var1'));
         $this->assertTrue($config->has('var6.var1'));
     }
+
+    /**
+     * @throws \Berlioz\Config\Exception\ConfigException
+     */
+    public function testConfigExtended()
+    {
+        $config = new ExtendedJsonConfig(sprintf('%s%s', __DIR__, '/files/config.extended.json'), true);
+        $this->assertFalse($config->has('var23.var1'));
+        $this->assertTrue($config->has('var5.var1'));
+        $this->assertEquals('alert', $config->get('log'));
+        $this->assertTrue($config->get('debug'));
+    }
 }

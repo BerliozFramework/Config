@@ -1,0 +1,5 @@
+{
+  "@extends": "config.json",
+  "debug": true,
+  "log": "alert"
+}

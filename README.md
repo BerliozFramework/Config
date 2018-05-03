@@ -97,18 +97,38 @@ You can also define another special variables with methods:
 - `setSpecialVariable(string $name, mixed $value)`
 - `setSpecialVariables(array $variables)`
 
+### Extends configurations files
+
+You can extends the current configuration file with another with special key `@extends`:
+```json
+{
+  "@extends": "another.json",
+  "key": "value"
+}
+```
+
 ### Example
 
 File **config.json**:
 
 ```json
 {
+  "@extends": "config.another.json",
   "var1": "value1",
   "var2": {
     "var3": "value3"
   },
   "var4": "~~include:config3.json~~",
   "var5": "~~extends:config3.json, config2.json~~"
+}
+```
+
+File **config.another.json**:
+
+```json
+{
+  "var.another": "value",
+  "var1": "valueX"
 }
 ```
 
@@ -133,6 +153,7 @@ The final config file is:
 
 ```json
 {
+  "var.another": "value",
   "var1": "value1",
   "var2": {
     "var3": "value3"

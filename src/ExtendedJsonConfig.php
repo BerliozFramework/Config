@@ -25,6 +25,8 @@ use Berlioz\Config\Exception\NotFoundException;
  */
 class ExtendedJsonConfig extends JsonConfig
 {
+    /** @var string[] JSON files currently loading */
+    private $jsonLoading = [];
     /** @var null|string Directory files */
     private $directory = null;
 
@@ -55,20 +57,42 @@ class ExtendedJsonConfig extends JsonConfig
      */
     protected function load(string $json, bool $jsonIsUrl = false): array
     {
-        if ($jsonIsUrl) {
-            if (empty($this->directory)) {
-                throw new ConfigException('Unable to load JSON as URL dynamically without extends this class');
+        $configuration = [];
+        $localJsonLoading = [];
+
+        do {
+            if ($jsonIsUrl) {
+                if (empty($this->directory)) {
+                    throw new ConfigException('Unable to load JSON as URL dynamically without extends this class');
+                }
+
+                if (($json = realpath($path = sprintf('%s/%s', ltrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
+                    throw new NotFoundException(sprintf('File "" does not exist', $path));
+                }
+
+                if (in_array($json, $this->jsonLoading)) {
+                    throw new ConfigException(sprintf('Recursive configuration inclusion/extend for file "%s"', $json));
+                }
+
+                // Add JSON file to currently loading
+                $this->jsonLoading[] = $localJsonLoading[] = $json;
             }
 
-            if (($json = realpath($path = sprintf('%s/%s', ltrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
-                throw new NotFoundException(sprintf('File "" does not exist', $path));
-            }
-        }
+            $configuration = array_replace_recursive(parent::load($json, $jsonIsUrl), $configuration);
 
-        $configuration = parent::load($json, $jsonIsUrl);
+            $extends = $json = $configuration['@extends'] ?? false;
+            unset($configuration['@extends']);
+        } while ($extends !== false);
 
         // Do inclusions
         array_walk_recursive($configuration, [$this, 'doInclusions']);
+
+        // Remove JSON file from currently loading
+        foreach ($localJsonLoading as $json) {
+            if ($jsonIsUrl && ($key = array_search($json, $this->jsonLoading)) !== false) {
+                unset($this->jsonLoading[$key]);
+            }
+        }
 
         return $configuration;
     }
