@@ -25,8 +25,6 @@ use Berlioz\Config\Exception\NotFoundException;
  */
 class JsonConfig extends AbstractConfig
 {
-    /** @var string Root directory */
-    private $rootDirectory;
     /** @var array Configuration */
     protected $configuration;
 
@@ -123,15 +121,5 @@ class JsonConfig extends AbstractConfig
         }
 
         return $exists;
-    }
-
-    /**
-     * Get root directory.
-     *
-     * @return string
-     */
-    protected function getRootDirectory(): string
-    {
-        return $this->rootDirectory;
     }
 }
