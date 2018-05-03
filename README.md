@@ -27,11 +27,16 @@ $ composer require berlioz/config
 
 You can create configuration like this:
 ```php
-$config = new JsonConfig('/root/directory/of-project', '/config/config.json');
-$config = new ExtendedJsonConfig('/root/directory/of-project', '/config/config.json');
+// Using files
+$config = new JsonConfig('/path/of-project/config/config.json', true);
+$config = new ExtendedJsonConfig('/path/of-project/config/config.json', true);
+
+// Using data
+$config = new JsonConfig('{"config": "test"}');
+$config = new ExtendedJsonConfig('{"config": "test"}');
 ```
 
-Second parameter of constructor is the relative path of config file starting to the given root directory.
+Second parameter of constructor is if the first parameter is an URL.
 
 ### Get value of key
 
@@ -79,7 +84,6 @@ You can also do some actions:
 
 ### Available specials variables
 
-- **directory_root**: the directory root given to the constructor
 - **php_version**: the value of constant PHP_VERSION
 - **php_version_id**: the value of constant PHP_VERSION_ID
 - **php_major_version**: the value of constant PHP_MAJOR_VERSION

@@ -1,4 +1,5 @@
 {
+  "directory_root": "test",
   "debug": false,
   "log": "warning",
   "var1": {
@@ -8,7 +9,7 @@
   },
   "var2": "~~var1.var1-1~~+value2",
   "var3": "~~directory_root~~",
-  "var4": "~~special:directory_root~~",
+  "var4": "~~special:best_framework~~",
   "var5": "~~extends:config.1.json, config.2.json~~",
   "var6": "~~include:config.1.json~~"
 }

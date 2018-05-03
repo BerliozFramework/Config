@@ -27,83 +27,63 @@ class JsonConfig extends AbstractConfig
 {
     /** @var string Root directory */
     private $rootDirectory;
-    /** @var string Configuration directory */
-    private $configDirectory;
     /** @var array Configuration */
     protected $configuration;
 
     /**
-     * @inheritdoc
-     */
-    public function __construct(string $rootDir, string $fileName)
-    {
-        if (($this->rootDirectory = realpath($rootDir)) !== false) {
-            // Define configuration file
-            $this->setConfigDirectory(dirname($fileName));
-
-            // Load configuration
-            $this->configuration = $this->load(basename($fileName));
-        } else {
-            throw new \InvalidArgumentException(sprintf('Directory "%s" does not exists', $rootDir));
-        }
-    }
-
-    /**
-     * Set configuration directory.
+     * JsonConfig constructor.
      *
-     * @param string $dirName Path of directory
+     * @param string $json      JSON data
+     * @param bool   $jsonIsUrl If JSON data is URL? (default: false)
      *
-     * @return void
-     * @throws \InvalidArgumentException If directory doesn't exists
+     * @throws \Berlioz\Config\Exception\ConfigException
      */
-    protected function setConfigDirectory(string $dirName): void
+    public function __construct(string $json, bool $jsonIsUrl = false)
     {
-        $dirName = realpath($this->getRootDirectory() . $dirName);
-
-        if (is_dir($dirName)) {
-            $this->configDirectory = $dirName;
-        } else {
-            if ($dirName !== false) {
-                throw new \InvalidArgumentException(sprintf('Directory "%s" does not exists', $dirName));
-            } else {
-                throw new \InvalidArgumentException(sprintf('JsonConfig directory does not exists', $dirName));
-            }
-        }
+        // Load configuration
+        $this->configuration = $this->load($json, $jsonIsUrl);
     }
 
     /**
      * Load configuration.
      *
-     * @param string $file File name
+     * @param string $json      JSON data
+     * @param bool   $jsonIsUrl If JSON data is URL? (default: false)
      *
      * @return array
      * @throws \Berlioz\Config\Exception\ConfigException If unable to load configuration file
      */
-    protected function load(string $file): array
+    protected function load(string $json, bool $jsonIsUrl = false): array
     {
-        $file = basename($file);
-        $fileName = realpath($this->configDirectory . '/' . $file);
-
         try {
-            $json = @file_get_contents($fileName);
+            $fileName = null;
+
+            if ($jsonIsUrl) {
+                $fileName = realpath($json);
+                $json = @file_get_contents($fileName);
+            }
 
             if ($json !== false) {
                 $configuration = json_decode($json, true);
 
                 if (empty($configuration)) {
-                    throw new ConfigException(sprintf('Not a valid JSON configuration file "%s"', $file));
+                    if ($jsonIsUrl) {
+                        throw new ConfigException(sprintf('Not a valid JSON configuration file "%s"', $fileName));
+                    } else {
+                        throw new ConfigException('Not a valid JSON data');
+                    }
                 }
             } else {
                 if (file_exists($fileName)) {
-                    throw new ConfigException(sprintf('Unable to load configuration file "%s"', $file));
+                    throw new ConfigException(sprintf('Unable to load configuration file "%s"', $fileName));
                 } else {
-                    throw new NotFoundException(sprintf('File "%s" not found', $file));
+                    throw new NotFoundException(sprintf('File "%s" not found', $fileName));
                 }
             }
         } catch (ConfigException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new ConfigException(sprintf('Unable to load configuration file "%s"', $file));
+            throw new ConfigException(sprintf('Unable to load configuration file "%s"', $fileName));
         }
 
         return $configuration;

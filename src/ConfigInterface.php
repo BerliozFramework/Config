@@ -25,6 +25,7 @@ interface ConfigInterface
      *
      * @return mixed
      * @throws \Berlioz\Config\Exception\NotFoundException
+     * @throws \Berlioz\Config\Exception\ConfigException
      */
     public function get(string $key = null, bool $throw = true);
 

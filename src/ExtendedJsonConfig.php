@@ -25,12 +25,20 @@ use Berlioz\Config\Exception\NotFoundException;
  */
 class ExtendedJsonConfig extends JsonConfig
 {
+    /** @var null|string Directory files */
+    private $directory = null;
+
     /**
      * @inheritdoc
      */
-    public function __construct(string $rootDir, string $fileName)
+    public function __construct(string $json, bool $jsonIsUrl = false)
     {
-        parent::__construct($rootDir, $fileName);
+        if ($jsonIsUrl) {
+            $this->directory = dirname($json);
+            $json = basename($json);
+        }
+
+        parent::__construct($json, $jsonIsUrl);
 
         // Do replacement of variables names
         array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
@@ -39,14 +47,25 @@ class ExtendedJsonConfig extends JsonConfig
     /**
      * Load configuration.
      *
-     * @param string $file File name
+     * @param string $json      JSON data
+     * @param bool   $jsonIsUrl If JSON data is URL? (default: false)
      *
      * @return array
      * @throws \Berlioz\Config\Exception\ConfigException If unable to load configuration file
      */
-    protected function load(string $file): array
+    protected function load(string $json, bool $jsonIsUrl = false): array
     {
-        $configuration = parent::load($file);
+        if ($jsonIsUrl) {
+            if (empty($this->directory)) {
+                throw new ConfigException('Unable to load JSON as URL dynamically without extends this class');
+            }
+
+            if (($json = realpath($path = sprintf('%s/%s', ltrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
+                throw new NotFoundException(sprintf('File "" does not exist', $path));
+            }
+        }
+
+        $configuration = parent::load($json, $jsonIsUrl);
 
         // Do inclusions
         array_walk_recursive($configuration, [$this, 'doInclusions']);
@@ -70,12 +89,16 @@ class ExtendedJsonConfig extends JsonConfig
                 try {
                     switch ($match['action']) {
                         case 'include':
-                            $value = $this->load($match['var']);
+                            $value = $this->load($match['var'], true);
                             break;
                         case 'extends':
                             $files = explode(',', $match['var']);
                             $files = array_map('trim', $files);
-                            $files = array_map([$this, 'load'], $files);
+                            $files = array_map(
+                                function ($file) {
+                                    return $this->load($file, true);
+                                },
+                                $files);
 
                             $value = call_user_func_array('array_replace_recursive', $files);
                             break;

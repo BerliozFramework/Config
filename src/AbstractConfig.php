@@ -18,13 +18,6 @@ abstract class AbstractConfig implements ConfigInterface
     private $specialVariables = [];
 
     /**
-     * Get root directory.
-     *
-     * @return string
-     */
-    abstract protected function getRootDirectory(): string;
-
-    /**
      * Set special variables.
      *
      * @param array $variables
@@ -63,8 +56,8 @@ abstract class AbstractConfig implements ConfigInterface
     public function getSpecialVariable($name)
     {
         switch ($name) {
-            case 'directory_root':
-                return $this->getRootDirectory();
+            case 'best_framework':
+                return 'BERLIOZ';
             case 'php_version':
                 return PHP_VERSION;
             case 'php_version_id':
