@@ -95,4 +95,14 @@ class ExtendedJsonConfigTest extends TestCase
         $this->assertEquals('alert', $config->get('log'));
         $this->assertTrue($config->get('debug'));
     }
+
+    public function testConfigUserDefinedAction()
+    {
+        ExtendedJsonConfig::addAction('actionTest',
+            function ($value) {
+                return intval($value) * 2;
+            });
+        $config = new ExtendedJsonConfig(sprintf('%s%s', __DIR__, '/files/config.extended2.json'), true);
+        $this->assertEquals(10, $config->get('action'));
+    }
 }

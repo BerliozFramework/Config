@@ -14,6 +14,7 @@ namespace Berlioz\Config;
 
 abstract class AbstractConfig implements ConfigInterface
 {
+    const TAG = '%';
     /** @var array Specials variables */
     private $specialVariables = [];
 
@@ -76,6 +77,34 @@ abstract class AbstractConfig implements ConfigInterface
                 return PHP_OS_FAMILY;
             default:
                 return $this->specialVariables[$name] ?? null;
+        }
+    }
+
+    /**
+     * Replace variables.
+     *
+     * @param mixed $value
+     *
+     * @throws \Berlioz\Config\Exception\ConfigException
+     * @throws \Berlioz\Config\Exception\NotFoundException
+     */
+    protected function replaceVariables(&$value)
+    {
+        if (is_string($value)) {
+            // Variables
+            $matches = [];
+            if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) > 0) {
+                foreach ($matches as $match) {
+                    // Is special variable ?
+                    if (is_null($subValue = $this->getSpecialVariable($match['var']))) {
+                        $subValue = $this->get($match['var']);
+                    }
+
+                    $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
+                }
+
+                $this->replaceVariables($value);
+            }
         }
     }
 }

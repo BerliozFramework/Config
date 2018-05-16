@@ -40,6 +40,9 @@ class JsonConfig extends AbstractConfig
     {
         // Load configuration
         $this->configuration = $this->load($json, $jsonIsUrl);
+
+        // Do replacement of variables names
+        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
     }
 
     /**

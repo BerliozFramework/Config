@@ -29,6 +29,8 @@ class ExtendedJsonConfig extends JsonConfig
     private $jsonLoading = [];
     /** @var null|string Directory files */
     private $directory = null;
+    /** @var array User defined actions */
+    private static $userDefinedActions = [];
 
     /**
      * @inheritdoc
@@ -41,9 +43,6 @@ class ExtendedJsonConfig extends JsonConfig
         }
 
         parent::__construct($json, $jsonIsUrl);
-
-        // Do replacement of variables names
-        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
     }
 
     /**
@@ -84,8 +83,8 @@ class ExtendedJsonConfig extends JsonConfig
             unset($configuration['@extends']);
         } while ($extends !== false);
 
-        // Do inclusions
-        array_walk_recursive($configuration, [$this, 'doInclusions']);
+        // Do actions
+        array_walk_recursive($configuration, [$this, 'doActions']);
 
         // Remove JSON file from currently loading
         foreach ($localJsonLoading as $json) {
@@ -98,18 +97,18 @@ class ExtendedJsonConfig extends JsonConfig
     }
 
     /**
-     * Do inclusions.
+     * Do actions.
      *
      * @param mixed $value
      *
      * @throws \Berlioz\Config\Exception\ConfigException
      */
-    public function doInclusions(&$value)
+    public function doActions(&$value)
     {
         if (is_string($value)) {
             $match = [];
 
-            if (preg_match('/^\s*~~(?<action>include|extends)\:(?<var>[\w\-\.\,\s]+)~~\s*$/i', $value, $match) == 1) {
+            if (preg_match($test = sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)), $value, $match) == 1) {
                 try {
                     switch ($match['action']) {
                         case 'include':
@@ -126,55 +125,32 @@ class ExtendedJsonConfig extends JsonConfig
 
                             $value = call_user_func_array('array_replace_recursive', $files);
                             break;
+                        default:
+                            if (isset(self::$userDefinedActions[$match['action']])) {
+                                $value = call_user_func_array(self::$userDefinedActions[$match['action']],
+                                                              [$match['var'],
+                                                               $this]);
+                            } else {
+                                throw new ConfigException(sprintf('Unknown action "%s" in config file', $match['action']));
+                            }
                     }
+                } catch (ConfigException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
-                    throw new ConfigException(sprintf('Unable to do inclusion of config line "%s"', $value), 0, $e);
+                    throw new ConfigException(sprintf('Unable to do action of config line "%s"', $value), 0, $e);
                 }
             }
         }
     }
 
     /**
-     * Replace variables.
+     * Add action.
      *
-     * @param mixed $value
-     *
-     * @throws \Berlioz\Config\Exception\ConfigException
-     * @throws \Berlioz\Config\Exception\NotFoundException
+     * @param string   $name     Action name
+     * @param callable $callback Callback
      */
-    public function replaceVariables(&$value)
+    public static function addAction(string $name, callable $callback)
     {
-        if (is_string($value)) {
-            // Variables
-            $matches = [];
-            if (preg_match_all('/~~(?:(?<action>\w+)\:)?(?<var>[\w\-\.\,\s]+)~~/i', $value, $matches, PREG_SET_ORDER) > 0) {
-                foreach ($matches as $match) {
-                    if (empty($match['action']) || $match['action'] == 'var') {
-                        // Is special variable ?
-                        if (is_null($subValue = $this->getSpecialVariable($match['var']))) {
-                            $subValue = $this->get($match['var']);
-                        }
-
-                        $value = str_replace(sprintf('~~%s~~', $match['var']), $subValue, $value);
-                    } else {
-                        switch ($match['action']) {
-                            case 'include':
-                            case 'extends':
-                                throw new ConfigException(sprintf('Action "%s" not allowed here', $match['action']));
-                                break;
-                            case 'special':
-                                if (is_null($value = $this->getSpecialVariable($match['var']))) {
-                                    throw new NotFoundException(sprintf('Unknown "%s" special variable', $match['var']));
-                                }
-                                break;
-                            default:
-                                throw new ConfigException(sprintf('Unknown action "%s" in config file "%s"', $match['action']));
-                        }
-                    }
-                }
-
-                $this->replaceVariables($value);
-            }
-        }
+        self::$userDefinedActions[$name] = $callback;
     }
 }

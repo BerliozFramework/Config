@@ -66,23 +66,13 @@ $config->has('var2'); // returns true
 $config->has('var4'); // returns false
 ```
 
-
-## Extended JSON format
-
-We created an extended format of the JSON format. Just to include, extends or uses variables in standard JSON format.
-
-### Syntax
+### Variables
 
 In values of JSON keys, you can add this syntax to use variables:
-`~~var1.var2~~`,
+`%var1.var2%`,
 that's get key **var1.var2** in replacement of value.
 
-You can also do some actions:
-* Include another file: `~~include:filename.json~~`
-* Extends files: `~~extends:filename.json, filename2.json, filename3.json~~`
-* Call special variable: `~~special:directory_root~~`
-
-### Available specials variables
+Some specials variables are available:
 
 - **php_version**: the value of constant PHP_VERSION
 - **php_version_id**: the value of constant PHP_VERSION_ID
@@ -93,9 +83,21 @@ You can also do some actions:
 - **system_os**: the value of constant PHP_OS
 - **system_os_family**: the value of constant PHP_OS_FAMILY
 
-You can also define another special variables with methods:
+You can also define your own specials variables with the methods:
 - `setSpecialVariable(string $name, mixed $value)`
 - `setSpecialVariables(array $variables)`
+
+## Extended JSON format
+
+We created an extended format of the JSON format.
+Just to include or extends JSON files.
+
+### Syntax
+
+* Include another file: `%include:filename.json%`
+* Extends files: `%extends:filename.json, filename2.json, filename3.json%`
+
+You can define your own actions with static method `ExtendedJsonConfig::addAction(string $name, callable $callback)`.
 
 ### Extends configurations files
 
@@ -118,8 +120,8 @@ File **config.json**:
   "var2": {
     "var3": "value3"
   },
-  "var4": "~~include:config3.json~~",
-  "var5": "~~extends:config3.json, config2.json~~"
+  "var4": "%include:config3.json%",
+  "var5": "%extends:config3.json, config2.json%"
 }
 ```
 

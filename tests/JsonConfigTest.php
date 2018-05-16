@@ -64,9 +64,9 @@ class JsonConfigTest extends TestCase
 
         // Test variable
         $this->assertEquals('value1-1', $config->get('var1.var1-1'));
-        $this->assertEquals('~~var1.var1-1~~+value2', $config->get('var2'));
-        $this->assertEquals('~~extends:config.1.json, config.2.json~~', $config->get('var5'));
-        $this->assertEquals('~~include:config.1.json~~', $config->get('var6'));
+        $this->assertEquals('value1-1+value2', $config->get('var2'));
+        $this->assertEquals('%extends:config.1.json, config.2.json%', $config->get('var5'));
+        $this->assertEquals('%include:config.1.json%', $config->get('var6'));
     }
 
     /**

@@ -1,0 +1,6 @@
+{
+  "@extends": "config.json",
+  "debug": true,
+  "log": "alert",
+  "action": "%actionTest:5%"
+}
