@@ -43,6 +43,11 @@ class ExtendedJsonConfig extends JsonConfig
         }
 
         parent::__construct($json, $jsonIsUrl);
+
+        // Do actions of variables names
+        if (!empty(self::$userDefinedActions)) {
+            array_walk_recursive($this->configuration, [$this, 'doActions']);
+        }
     }
 
     /**
@@ -84,7 +89,7 @@ class ExtendedJsonConfig extends JsonConfig
         } while ($extends !== false);
 
         // Do actions
-        array_walk_recursive($configuration, [$this, 'doActions']);
+        array_walk_recursive($configuration, [$this, 'doInclusions']);
 
         // Remove JSON file from currently loading
         foreach ($localJsonLoading as $json) {
@@ -97,18 +102,18 @@ class ExtendedJsonConfig extends JsonConfig
     }
 
     /**
-     * Do actions.
+     * Do inclusions.
      *
      * @param mixed $value
      *
      * @throws \Berlioz\Config\Exception\ConfigException
      */
-    public function doActions(&$value)
+    protected function doInclusions(&$value)
     {
         if (is_string($value)) {
             $match = [];
 
-            if (preg_match($test = sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)), $value, $match) == 1) {
+            if (preg_match(sprintf('/^\s*%1$s(?<action>include|extends)\:(?<var>[\w\-\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)), $value, $match) == 1) {
                 try {
                     switch ($match['action']) {
                         case 'include':
@@ -125,14 +130,34 @@ class ExtendedJsonConfig extends JsonConfig
 
                             $value = call_user_func_array('array_replace_recursive', $files);
                             break;
-                        default:
-                            if (isset(self::$userDefinedActions[$match['action']])) {
-                                $value = call_user_func_array(self::$userDefinedActions[$match['action']],
-                                                              [$match['var'],
-                                                               $this]);
-                            } else {
-                                throw new ConfigException(sprintf('Unknown action "%s" in config file', $match['action']));
-                            }
+                    }
+                } catch (\Exception $e) {
+                    throw new ConfigException(sprintf('Unable to do action of config line "%s"', $value), 0, $e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Do actions.
+     *
+     * @param mixed $value
+     *
+     * @throws \Berlioz\Config\Exception\ConfigException
+     */
+    public function doActions(&$value)
+    {
+        if (is_string($value)) {
+            $matches = [];
+
+            if (preg_match(sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)), $value, $matches) == 1) {
+                try {
+                    if (isset(self::$userDefinedActions[$matches['action']])) {
+                        $value = call_user_func_array(self::$userDefinedActions[$matches['action']],
+                                                      [$matches['var'],
+                                                       $this]);
+                    } else {
+                        throw new ConfigException(sprintf('Unknown action "%s" in config file', $matches['action']));
                     }
                 } catch (ConfigException $e) {
                     throw $e;
