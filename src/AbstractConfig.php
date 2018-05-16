@@ -15,46 +15,43 @@ namespace Berlioz\Config;
 abstract class AbstractConfig implements ConfigInterface
 {
     const TAG = '%';
-    /** @var array Specials variables */
-    private $specialVariables = [];
+    /** @var array User defined variables */
+    private $userDefinedVariables = [];
 
     /**
-     * Set special variables.
-     *
-     * @param array $variables
-     *
-     * @return static
+     * @inheritdoc
      */
-    public function setSpecialVariables(array $variables)
+    public function setVariables(array $variables)
     {
-        $this->specialVariables = $variables;
+        $this->userDefinedVariables = $variables;
 
         return $this;
     }
 
     /**
-     * Set special variable.
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
+     * @inheritdoc
      */
-    public function setSpecialVariable(string $name, $value)
+    public function setVariable(string $name, $value)
     {
-        $this->specialVariables[$name] = $value;
+        $this->userDefinedVariables[$name] = $value;
 
         return $this;
     }
 
     /**
-     * Get special variable.
+     * @inheritdoc
      *
-     * @param string $name
-     *
-     * @return mixed
+     * Some variables are already defined:
+     *   - php_version
+     *   - php_version_id
+     *   - php_major_version
+     *   - php_minor_version
+     *   - php_release_version
+     *   - php_sapi
+     *   - system_os
+     *   - system_os_family
      */
-    public function getSpecialVariable($name)
+    public function getVariable($name)
     {
         switch ($name) {
             case 'best_framework':
@@ -76,7 +73,7 @@ abstract class AbstractConfig implements ConfigInterface
             case 'system_os_family':
                 return PHP_OS_FAMILY;
             default:
-                return $this->specialVariables[$name] ?? null;
+                return $this->userDefinedVariables[$name] ?? null;
         }
     }
 
@@ -95,8 +92,8 @@ abstract class AbstractConfig implements ConfigInterface
             $matches = [];
             if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) > 0) {
                 foreach ($matches as $match) {
-                    // Is special variable ?
-                    if (is_null($subValue = $this->getSpecialVariable($match['var']))) {
+                    // Is variable ?
+                    if (is_null($subValue = $this->getVariable($match['var']))) {
                         $subValue = $this->get($match['var']);
                     }
 

@@ -72,7 +72,7 @@ In values of JSON keys, you can add this syntax to use variables:
 `%var1.var2%`,
 that's get key **var1.var2** in replacement of value.
 
-Some specials variables are available:
+Some variables are available by default:
 
 - **php_version**: the value of constant PHP_VERSION
 - **php_version_id**: the value of constant PHP_VERSION_ID
@@ -83,9 +83,11 @@ Some specials variables are available:
 - **system_os**: the value of constant PHP_OS
 - **system_os_family**: the value of constant PHP_OS_FAMILY
 
-You can also define your own specials variables with the methods:
-- `setSpecialVariable(string $name, mixed $value)`
-- `setSpecialVariables(array $variables)`
+You can also define your own variables with the methods:
+- `setVariable(string $name, mixed $value)`
+- `setVariables(array $variables)`
+
+**WARNING**: Priority is given to the user defined variable in the config object instead of JSON path.
 
 ## Extended JSON format
 

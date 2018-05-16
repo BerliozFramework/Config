@@ -40,4 +40,32 @@ interface ConfigInterface
      * @return bool
      */
     public function has(string $key = null): bool;
+
+    /**
+     * Set user defined variables.
+     *
+     * @param array $variables
+     *
+     * @return static
+     */
+    public function setVariables(array $variables);
+
+    /**
+     * Set user defined variable.
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function setVariable(string $name, $value);
+
+    /**
+     * Get user defined variable.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getVariable($name);
 }
