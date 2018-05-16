@@ -15,8 +15,19 @@ namespace Berlioz\Config;
 abstract class AbstractConfig implements ConfigInterface
 {
     const TAG = '%';
+    /** @var array Configuration */
+    protected $configuration;
     /** @var array User defined variables */
     private $userDefinedVariables = [];
+
+    /**
+     * AbstractConfig constructor.
+     */
+    public function __construct()
+    {
+        // Do replacement of variables names
+        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
+    }
 
     /**
      * @inheritdoc

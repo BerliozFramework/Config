@@ -25,9 +25,6 @@ use Berlioz\Config\Exception\NotFoundException;
  */
 class JsonConfig extends AbstractConfig
 {
-    /** @var array Configuration */
-    protected $configuration;
-
     /**
      * JsonConfig constructor.
      *
@@ -41,8 +38,7 @@ class JsonConfig extends AbstractConfig
         // Load configuration
         $this->configuration = $this->load($json, $jsonIsUrl);
 
-        // Do replacement of variables names
-        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
+        parent::__construct();
     }
 
     /**
@@ -67,7 +63,7 @@ class JsonConfig extends AbstractConfig
             if ($json !== false) {
                 $configuration = json_decode($json, true);
 
-                if (empty($configuration)) {
+                if (!is_array($configuration)) {
                     if ($jsonIsUrl) {
                         throw new ConfigException(sprintf('Not a valid JSON configuration file "%s"', $fileName));
                     } else {

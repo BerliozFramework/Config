@@ -58,6 +58,15 @@ class JsonConfigTest extends TestCase
     /**
      * @throws \Berlioz\Config\Exception\ConfigException
      */
+    public function test__constructEmptyFile()
+    {
+        $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.empty.json'), true);
+        $this->assertInstanceOf(JsonConfig::class, $config);
+    }
+
+    /**
+     * @throws \Berlioz\Config\Exception\ConfigException
+     */
     public function testGet()
     {
         $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.json'), true);
