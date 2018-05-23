@@ -19,6 +19,16 @@ abstract class AbstractConfig implements ConfigInterface
     const TAG = '%';
     /** @var array Configuration */
     protected $configuration;
+    /** @var array Default variables */
+    protected $defaultVariables = ['best_framework'      => 'BERLIOZ',
+                                   'php_version'         => PHP_VERSION,
+                                   'php_version_id'      => PHP_VERSION_ID,
+                                   'php_major_version'   => PHP_MAJOR_VERSION,
+                                   'php_minor_version'   => PHP_MINOR_VERSION,
+                                   'php_release_version' => PHP_RELEASE_VERSION,
+                                   'php_sapi'            => PHP_SAPI,
+                                   'system_os'           => PHP_OS,
+                                   'system_os_family'    => PHP_OS_FAMILY];
     /** @var array User defined variables */
     private $userDefinedVariables = [];
 
@@ -98,28 +108,9 @@ abstract class AbstractConfig implements ConfigInterface
      */
     public function getVariable(string $name, $default = null)
     {
-        switch ($name) {
-            case 'best_framework':
-                return 'BERLIOZ';
-            case 'php_version':
-                return PHP_VERSION;
-            case 'php_version_id':
-                return PHP_VERSION_ID;
-            case 'php_major_version':
-                return PHP_MAJOR_VERSION;
-            case 'php_minor_version':
-                return PHP_MINOR_VERSION;
-            case 'php_release_version':
-                return PHP_RELEASE_VERSION;
-            case 'php_sapi':
-                return PHP_SAPI;
-            case 'system_os':
-                return PHP_OS;
-            case 'system_os_family':
-                return PHP_OS_FAMILY;
-            default:
-                return $this->userDefinedVariables[$name] ?? $default;
-        }
+        return $this->defaultVariables[$name] ??
+               $this->userDefinedVariables[$name] ??
+               $default;
     }
 
     /**

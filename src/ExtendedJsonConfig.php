@@ -152,13 +152,13 @@ class ExtendedJsonConfig extends JsonConfig
 
             if (preg_match(sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)), $value, $matches) == 1) {
                 try {
-                    if (isset(self::$userDefinedActions[$matches['action']])) {
-                        $value = call_user_func_array(self::$userDefinedActions[$matches['action']],
-                                                      [$matches['var'],
-                                                       $this]);
-                    } else {
+                    if (!isset(self::$userDefinedActions[$matches['action']])) {
                         throw new ConfigException(sprintf('Unknown action "%s" in config file', $matches['action']));
                     }
+
+                    $value = call_user_func_array(self::$userDefinedActions[$matches['action']],
+                                                  [$matches['var'],
+                                                   $this]);
                 } catch (ConfigException $e) {
                     throw $e;
                 } catch (\Exception $e) {

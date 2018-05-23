@@ -64,16 +64,14 @@ class JsonConfig extends AbstractConfig
                 if (!is_array($configuration)) {
                     if ($jsonIsUrl) {
                         throw new ConfigException(sprintf('Not a valid JSON configuration file "%s"', $fileName));
-                    } else {
-                        throw new ConfigException('Not a valid JSON data');
                     }
+                    throw new ConfigException('Not a valid JSON data');
                 }
             } else {
                 if (file_exists($fileName)) {
                     throw new ConfigException(sprintf('Unable to load configuration file "%s"', $fileName));
-                } else {
-                    throw new NotFoundException(sprintf('File "%s" not found', $fileName));
                 }
+                throw new NotFoundException(sprintf('File "%s" not found', $fileName));
             }
         } catch (ConfigException $e) {
             throw $e;
