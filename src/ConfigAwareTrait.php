@@ -18,7 +18,7 @@ namespace Berlioz\Config;
 trait ConfigAwareTrait
 {
     /** @var \Berlioz\Config\ConfigInterface Config */
-    private $config;
+    protected $config;
 
     /**
      * Get config.
