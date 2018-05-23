@@ -13,7 +13,6 @@
 namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
-use Berlioz\Config\Exception\NotFoundException;
 
 abstract class AbstractConfig implements ConfigInterface
 {
@@ -35,22 +34,20 @@ abstract class AbstractConfig implements ConfigInterface
     /**
      * @inheritdoc
      */
-    public function get(string $key = null, bool $throw = true)
+    public function get(string $key = null, $default = null)
     {
         try {
             $key = explode('.', $key);
             $value = b_array_traverse($this->configuration, $key, $exists);
 
-            if ($exists === false && $throw) {
-                throw new NotFoundException(sprintf('Unable to find "%s" key in configuration file', implode('.', $key)));
+            if ($exists === false) {
+                return $default;
             }
-        } catch (ConfigException $e) {
-            throw $e;
+
+            return $value;
         } catch (\Exception $e) {
             throw new ConfigException(sprintf('Unable to get "%s" key in configuration file', implode('.', $key)));
         }
-
-        return $value;
     }
 
     /**
@@ -107,7 +104,7 @@ abstract class AbstractConfig implements ConfigInterface
      *   - system_os
      *   - system_os_family
      */
-    public function getVariable($name)
+    public function getVariable(string $name, $default = null)
     {
         switch ($name) {
             case 'best_framework':
@@ -129,7 +126,7 @@ abstract class AbstractConfig implements ConfigInterface
             case 'system_os_family':
                 return PHP_OS_FAMILY;
             default:
-                return $this->userDefinedVariables[$name] ?? null;
+                return $this->userDefinedVariables[$name] ?? $default;
         }
     }
 
@@ -139,7 +136,6 @@ abstract class AbstractConfig implements ConfigInterface
      * @param mixed $value
      *
      * @throws \Berlioz\Config\Exception\ConfigException
-     * @throws \Berlioz\Config\Exception\NotFoundException
      */
     protected function replaceVariables(&$value)
     {

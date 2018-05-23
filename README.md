@@ -54,10 +54,12 @@ To get value, you must do like this:
 ```php
 $config->get('var1'); // returns string 'value1'
 $config->get('var2'); // returns array ['var3' => 'value3']
-$config->get('var1.var3'); // returns 'value3'
+$config->get('var2.var3'); // returns 'value3'
+$config->get('var3'); // returns NULL
+$config->get('var3', true); // returns TRUE (default value given)
 ```
 
-If you get an unknown value, the method thrown an exception: **\Berlioz\Config\NotFoundException**.
+If you get an unknown value, the method return the default value given in second parameter else **NULL**.
 
 You can also test if a key exists, like this:
 ```php

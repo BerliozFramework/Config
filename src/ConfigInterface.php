@@ -18,16 +18,14 @@ interface ConfigInterface
      * Get value.
      *
      * Key given in parameter must be in format: key.key2.key3
-     * Must throw exception if $throw parameter is true, else must return null value if key not found.
      *
-     * @param string $key   Key
-     * @param bool   $throw Throw exception if doesn't exists, else returns null
+     * @param string $key     Key
+     * @param mixed  $default Default value to return if the key does not exist.
      *
      * @return mixed
-     * @throws \Berlioz\Config\Exception\NotFoundException
      * @throws \Berlioz\Config\Exception\ConfigException
      */
-    public function get(string $key = null, bool $throw = true);
+    public function get(string $key = null, $default = null);
 
     /**
      * Key exists ?
@@ -64,8 +62,9 @@ interface ConfigInterface
      * Get user defined variable.
      *
      * @param string $name
+     * @param mixed  $default Default value to return if the key does not exist.
      *
      * @return mixed
      */
-    public function getVariable($name);
+    public function getVariable(string $name, $default = null);
 }

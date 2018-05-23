@@ -83,9 +83,8 @@ class JsonConfigTest extends TestCase
      */
     public function testGetNotFound()
     {
-        $this->expectException(NotFoundException::class);
         $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.json'), true);
-        $config->get('var100');
+        $this->assertEquals('notfound', $config->get('var100', 'notfound'));
     }
 
     /**
