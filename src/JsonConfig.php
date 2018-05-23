@@ -37,8 +37,6 @@ class JsonConfig extends AbstractConfig
     {
         // Load configuration
         $this->configuration = $this->load($json, $jsonIsUrl);
-
-        parent::__construct();
     }
 
     /**

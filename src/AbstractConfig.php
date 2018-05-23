@@ -23,15 +23,6 @@ abstract class AbstractConfig implements ConfigInterface
     private $userDefinedVariables = [];
 
     /**
-     * AbstractConfig constructor.
-     */
-    public function __construct()
-    {
-        // Do replacement of variables names
-        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
-    }
-
-    /**
      * @inheritdoc
      */
     public function get(string $key = null, $default = null)
@@ -41,7 +32,14 @@ abstract class AbstractConfig implements ConfigInterface
             $value = b_array_traverse($this->configuration, $key, $exists);
 
             if ($exists === false) {
-                return $default;
+                $value = $default;
+            }
+
+            // Do replacement of variables names
+            if (is_array($value)) {
+                array_walk_recursive($value, [$this, 'replaceVariables']);
+            } else {
+                $this->replaceVariables($value);
             }
 
             return $value;
@@ -72,9 +70,6 @@ abstract class AbstractConfig implements ConfigInterface
     {
         $this->userDefinedVariables = $variables;
 
-        // Do replacement of variables names
-        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
-
         return $this;
     }
 
@@ -84,9 +79,6 @@ abstract class AbstractConfig implements ConfigInterface
     public function setVariable(string $name, $value)
     {
         $this->userDefinedVariables[$name] = $value;
-
-        // Do replacement of variables names
-        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
 
         return $this;
     }
