@@ -12,6 +12,9 @@
 
 namespace Berlioz\Config;
 
+use Berlioz\Config\Exception\ConfigException;
+use Berlioz\Config\Exception\NotFoundException;
+
 abstract class AbstractConfig implements ConfigInterface
 {
     const TAG = '%';
@@ -32,9 +35,48 @@ abstract class AbstractConfig implements ConfigInterface
     /**
      * @inheritdoc
      */
+    public function get(string $key = null, bool $throw = true)
+    {
+        try {
+            $key = explode('.', $key);
+            $value = b_array_traverse($this->configuration, $key, $exists);
+
+            if ($exists === false && $throw) {
+                throw new NotFoundException(sprintf('Unable to find "%s" key in configuration file', implode('.', $key)));
+            }
+        } catch (ConfigException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            throw new ConfigException(sprintf('Unable to get "%s" key in configuration file', implode('.', $key)));
+        }
+
+        return $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function has(string $key = null): bool
+    {
+        try {
+            $key = explode('.', $key);
+            b_array_traverse($this->configuration, $key, $exists);
+        } catch (\Exception $e) {
+            $exists = false;
+        }
+
+        return $exists;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setVariables(array $variables)
     {
         $this->userDefinedVariables = $variables;
+
+        // Do replacement of variables names
+        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
 
         return $this;
     }
@@ -45,6 +87,9 @@ abstract class AbstractConfig implements ConfigInterface
     public function setVariable(string $name, $value)
     {
         $this->userDefinedVariables[$name] = $value;
+
+        // Do replacement of variables names
+        array_walk_recursive($this->configuration, [$this, 'replaceVariables']);
 
         return $this;
     }

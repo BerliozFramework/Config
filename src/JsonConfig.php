@@ -85,40 +85,4 @@ class JsonConfig extends AbstractConfig
 
         return $configuration;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function get(string $key = null, bool $throw = true)
-    {
-        try {
-            $key = explode('.', $key);
-            $value = b_array_traverse($this->configuration, $key, $exists);
-
-            if ($exists === false && $throw) {
-                throw new NotFoundException(sprintf('Unable to find "%s" key in configuration file', implode('.', $key)));
-            }
-        } catch (ConfigException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new ConfigException(sprintf('Unable to get "%s" key in configuration file', implode('.', $key)));
-        }
-
-        return $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function has(string $key = null): bool
-    {
-        try {
-            $key = explode('.', $key);
-            b_array_traverse($this->configuration, $key, $exists);
-        } catch (\Exception $e) {
-            $exists = false;
-        }
-
-        return $exists;
-    }
 }
