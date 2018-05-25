@@ -27,10 +27,16 @@ abstract class AbstractConfig implements ConfigInterface
                                    'php_minor_version'   => PHP_MINOR_VERSION,
                                    'php_release_version' => PHP_RELEASE_VERSION,
                                    'php_sapi'            => PHP_SAPI,
-                                   'system_os'           => PHP_OS,
-                                   'system_os_family'    => PHP_OS_FAMILY];
+                                   'system_os'           => PHP_OS];
     /** @var array User defined variables */
     private $userDefinedVariables = [];
+
+    public function __construct()
+    {
+        if ((version_compare(PHP_VERSION, '7.2.0') >= 0)) {
+            $this->defaultVariables['system_os_family'] = PHP_OS_FAMILY;
+        }
+    }
 
     /**
      * @inheritdoc
