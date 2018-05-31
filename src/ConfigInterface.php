@@ -18,6 +18,7 @@ interface ConfigInterface
      * Get value.
      *
      * Key given in parameter must be in format: key.key2.key3
+     * If key NULL given, full configuration given.
      *
      * @param string $key     Key
      * @param mixed  $default Default value to return if the key does not exist.

@@ -31,6 +31,9 @@ abstract class AbstractConfig implements ConfigInterface
     /** @var array User defined variables */
     private $userDefinedVariables = [];
 
+    /**
+     * AbstractConfig constructor.
+     */
     public function __construct()
     {
         if ((version_compare(PHP_VERSION, '7.2.0') >= 0)) {
@@ -44,11 +47,15 @@ abstract class AbstractConfig implements ConfigInterface
     public function get(string $key = null, $default = null)
     {
         try {
-            $key = explode('.', $key);
-            $value = b_array_traverse($this->configuration, $key, $exists);
+            if (!is_null($key)) {
+                $key = explode('.', $key);
+                $value = b_array_traverse($this->configuration, $key, $exists);
 
-            if ($exists === false) {
-                $value = $default;
+                if ($exists === false) {
+                    $value = $default;
+                }
+            } else {
+                $value = $this->configuration;
             }
 
             // Do replacement of variables names
