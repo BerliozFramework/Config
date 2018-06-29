@@ -70,7 +70,7 @@ class ExtendedJsonConfig extends JsonConfig
                     throw new ConfigException('Unable to load JSON as URL dynamically without extends this class');
                 }
 
-                if (($json = realpath($path = sprintf('%s/%s', ltrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
+                if (($json = realpath($path = sprintf('%s/%s', rtrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
                     throw new NotFoundException(sprintf('File "%s" does not exist', $path));
                 }
 
