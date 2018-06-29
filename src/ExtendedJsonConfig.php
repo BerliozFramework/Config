@@ -71,7 +71,7 @@ class ExtendedJsonConfig extends JsonConfig
                 }
 
                 if (($json = realpath($path = sprintf('%s/%s', ltrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
-                    throw new NotFoundException(sprintf('File "" does not exist', $path));
+                    throw new NotFoundException(sprintf('File "%s" does not exist', $path));
                 }
 
                 if (in_array($json, $this->jsonLoading)) {
