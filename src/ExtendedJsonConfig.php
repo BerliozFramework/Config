@@ -13,7 +13,6 @@
 namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
-use Berlioz\Config\Exception\NotFoundException;
 
 /**
  * Class ExtendedJsonConfig.
@@ -27,8 +26,6 @@ class ExtendedJsonConfig extends JsonConfig
 {
     /** @var string[] JSON files currently loading */
     private $jsonLoading = [];
-    /** @var null|string Directory files */
-    private $directory = null;
     /** @var array User defined actions */
     private static $userDefinedActions = [];
 
@@ -37,11 +34,6 @@ class ExtendedJsonConfig extends JsonConfig
      */
     public function __construct(string $json, bool $jsonIsUrl = false)
     {
-        if ($jsonIsUrl) {
-            $this->directory = dirname($json);
-            $json = basename($json);
-        }
-
         parent::__construct($json, $jsonIsUrl);
 
         // Do actions of variables names
@@ -50,52 +42,44 @@ class ExtendedJsonConfig extends JsonConfig
         }
     }
 
-    /**
-     * Load configuration.
-     *
-     * @param string $json      JSON data
-     * @param bool   $jsonIsUrl If JSON data is URL? (default: false)
-     *
-     * @return array
-     * @throws \Berlioz\Config\Exception\ConfigException If unable to load configuration file
-     */
-    protected function load(string $json, bool $jsonIsUrl = false): array
+    protected function load(string $json, bool $jsonIsUrl = false, string $baseDirectory = null): array
     {
         $configuration = [];
         $localJsonLoading = [];
 
-        do {
-            if ($jsonIsUrl) {
-                if (empty($this->directory)) {
-                    throw new ConfigException('Unable to load JSON as URL dynamically without extends this class');
+        if ($jsonIsUrl) {
+            do {
+                if (!empty($baseDirectory)) {
+                    $json = realpath($path = sprintf('%s/%s', rtrim($baseDirectory, '\\/'), ltrim($json, '\\/')));
                 }
+                $baseDirectory = dirname($json);
 
-                if (($json = realpath($path = sprintf('%s/%s', rtrim($this->directory, '\\/'), ltrim($json, '\\/')))) === false) {
-                    throw new NotFoundException(sprintf('File "%s" does not exist', $path));
-                }
-
+                // Check recursive file call
                 if (in_array($json, $this->jsonLoading)) {
-                    throw new ConfigException(sprintf('Recursive configuration inclusion/extend for file "%s"', $json));
+                    throw new ConfigException(sprintf('Recursive configuration inclusion/extend for file "%s"', $path ?? $json));
                 }
+
+                $configuration = array_replace_recursive($this->loadUrl($json), $configuration);
+
+                // Get @extends value
+                $extends = $json = $configuration['@extends'] ?? false;
+                unset($configuration['@extends']);
 
                 // Add JSON file to currently loading
                 $this->jsonLoading[] = $localJsonLoading[] = $json;
+
+                // Do inclusions
+                array_walk_recursive($configuration, [$this, 'doInclusions'], $baseDirectory);
+            } while ($extends !== false);
+
+            // Remove JSON file from currently loading
+            foreach ($localJsonLoading as $json) {
+                if ($jsonIsUrl && ($key = array_search($json, $this->jsonLoading)) !== false) {
+                    unset($this->jsonLoading[$key]);
+                }
             }
-
-            $configuration = array_replace_recursive(parent::load($json, $jsonIsUrl), $configuration);
-
-            $extends = $json = $configuration['@extends'] ?? false;
-            unset($configuration['@extends']);
-        } while ($extends !== false);
-
-        // Do actions
-        array_walk_recursive($configuration, [$this, 'doInclusions']);
-
-        // Remove JSON file from currently loading
-        foreach ($localJsonLoading as $json) {
-            if ($jsonIsUrl && ($key = array_search($json, $this->jsonLoading)) !== false) {
-                unset($this->jsonLoading[$key]);
-            }
+        } else {
+            $configuration = $this->loadJson($json);
         }
 
         return $configuration;
@@ -104,11 +88,12 @@ class ExtendedJsonConfig extends JsonConfig
     /**
      * Do inclusions.
      *
-     * @param mixed $value
+     * @param mixed  $value
+     * @param string $baseDirectory Base directory
      *
      * @throws \Berlioz\Config\Exception\ConfigException
      */
-    protected function doInclusions(&$value)
+    protected function doInclusions(&$value, $key, string $baseDirectory)
     {
         if (is_string($value)) {
             $match = [];
@@ -117,14 +102,14 @@ class ExtendedJsonConfig extends JsonConfig
                 try {
                     switch ($match['action']) {
                         case 'include':
-                            $value = $this->load($match['var'], true);
+                            $value = $this->load($match['var'], true, $baseDirectory);
                             break;
                         case 'extends':
                             $files = explode(',', $match['var']);
                             $files = array_map('trim', $files);
                             $files = array_map(
-                                function ($file) {
-                                    return $this->load($file, true);
+                                function ($file) use ($baseDirectory) {
+                                    return $this->load($file, true, $baseDirectory);
                                 },
                                 $files);
 

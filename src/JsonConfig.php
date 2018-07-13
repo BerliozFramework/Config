@@ -52,35 +52,57 @@ class JsonConfig extends AbstractConfig
      */
     protected function load(string $json, bool $jsonIsUrl = false): array
     {
-        try {
-            $fileName = null;
+        if ($jsonIsUrl) {
+            return $this->loadUrl($json);
+        }
 
-            if ($jsonIsUrl) {
-                $fileName = realpath($json);
-                $json = @file_get_contents($fileName);
-            }
+        return $this->loadJson($json);
+    }
 
-            if ($json !== false) {
-                $configuration = json_decode($json, true);
+    /**
+     * Load JSON data.
+     *
+     * @param string $json
+     *
+     * @return array
+     * @throws \Berlioz\Config\Exception\ConfigException
+     */
+    protected function loadJson(string $json): array
+    {
+        $configuration = json_decode($json, true);
 
-                if (!is_array($configuration)) {
-                    if ($jsonIsUrl) {
-                        throw new ConfigException(sprintf('Not a valid JSON configuration file "%s"', $fileName));
-                    }
-                    throw new ConfigException('Not a valid JSON data');
-                }
-            } else {
-                if (file_exists($fileName)) {
-                    throw new ConfigException(sprintf('Unable to load configuration file "%s"', $fileName));
-                }
-                throw new NotFoundException(sprintf('File "%s" not found', $fileName));
-            }
-        } catch (ConfigException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new ConfigException(sprintf('Unable to load configuration file "%s"', $fileName));
+        if (!is_array($configuration)) {
+            throw new ConfigException('Not a valid JSON data');
         }
 
         return $configuration;
+    }
+
+    /**
+     * Load JSON file.
+     *
+     * @param string $jsonFile
+     *
+     * @return array
+     * @throws \Berlioz\Config\Exception\NotFoundException
+     * @throws \Berlioz\Config\Exception\ConfigException
+     */
+    protected function loadUrl(string $jsonFile): array
+    {
+        //Get real path of file
+        if (($fileName = realpath($jsonFile)) === false) {
+            throw new NotFoundException(sprintf('File "%s" not found', $jsonFile));
+        }
+
+        // Read file
+        if (($json = @file_get_contents($fileName)) === false) {
+            throw new ConfigException(sprintf('Unable to load configuration file "%s"', $fileName));
+        }
+
+        try {
+            return $this->loadJson($json);
+        } catch (ConfigException $e) {
+            throw new ConfigException(sprintf('Not a valid JSON data for file "%s"', $fileName));
+        }
     }
 }

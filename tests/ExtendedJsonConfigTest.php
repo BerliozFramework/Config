@@ -31,6 +31,16 @@ class ExtendedJsonConfigTest extends TestCase
     /**
      * @throws \Berlioz\Config\Exception\ConfigException
      */
+    public function test__constructNoUrl()
+    {
+        $json = file_get_contents(sprintf('%s%s', __DIR__, '/files/config.2.json'));
+        $config = new ExtendedJsonConfig($json);
+        $this->assertInstanceOf(ExtendedJsonConfig::class, $config);
+    }
+
+    /**
+     * @throws \Berlioz\Config\Exception\ConfigException
+     */
     public function test__constructNotExistsFile()
     {
         $this->expectException(NotFoundException::class);
@@ -91,7 +101,7 @@ class ExtendedJsonConfigTest extends TestCase
         $config = new ExtendedJsonConfig(sprintf('%s%s', __DIR__, '/files/config.extended.json'), true);
         $this->assertFalse($config->has('var23.var1'));
         $this->assertTrue($config->has('var5.var1'));
-        $this->assertEquals('alert', $config->get('log'));
+        $this->assertEquals('warning', $config->get('log'));
         $this->assertTrue($config->get('debug'));
     }
 

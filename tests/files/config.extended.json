@@ -1,5 +1,5 @@
 {
-  "@extends": "config.json",
+  "@extends": "./subdir/config.json",
   "debug": true,
-  "log": "alert"
+  "log": "warning"
 }
