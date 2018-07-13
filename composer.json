@@ -25,6 +25,6 @@
     "berlioz/utils": "dev-develop"
   },
   "require-dev": {
-    "phpunit/phpunit": "~6.5"
+    "phpunit/phpunit": "~7.2"
   }
 }
