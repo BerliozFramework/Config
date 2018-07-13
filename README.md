@@ -100,6 +100,7 @@ Just to include or extends JSON files.
 
 * Include another file: `%include:filename.json%`
 * Extends files: `%extends:filename.json, filename2.json, filename3.json%`
+* Allow inline comments : `// My comment` (comment must be alone on a line) 
 
 You can define your own actions with static method `ExtendedJsonConfig::addAction(string $name, callable $callback)`.
 
@@ -108,7 +109,9 @@ You can define your own actions with static method `ExtendedJsonConfig::addActio
 You can extends the current configuration file with another with special key `@extends`:
 ```json
 {
+  // Extends
   "@extends": "another.json",
+  // Keys
   "key": "value"
 }
 ```

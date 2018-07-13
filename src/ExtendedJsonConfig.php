@@ -42,6 +42,17 @@ class ExtendedJsonConfig extends JsonConfig
         }
     }
 
+    /**
+     * Load configuration.
+     *
+     * @param string      $json          JSON data
+     * @param bool        $jsonIsUrl     If JSON data is URL? (default: false)
+     * @param string|null $baseDirectory Base directory to get JSON file
+     *
+     * @return array
+     * @throws \Berlioz\Config\Exception\ConfigException
+     * @throws \Berlioz\Config\Exception\NotFoundException
+     */
     protected function load(string $json, bool $jsonIsUrl = false, string $baseDirectory = null): array
     {
         $configuration = [];
@@ -84,6 +95,20 @@ class ExtendedJsonConfig extends JsonConfig
 
         return $configuration;
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function loadJson(string $json): array
+    {
+        $json = preg_replace('#^\s*//.*$\v?#mx', '', $json);
+
+        return parent::loadJson($json);
+    }
+
+    ////////////////////////////
+    /// INCLUSIONS & ACTIONS ///
+    ////////////////////////////
 
     /**
      * Do inclusions.
