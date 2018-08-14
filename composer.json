@@ -22,6 +22,7 @@
   },
   "require": {
     "php": "^7.1",
+    "ext-json": "*",
     "berlioz/utils": "dev-develop"
   },
   "require-dev": {
