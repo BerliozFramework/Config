@@ -87,7 +87,8 @@ class JsonConfigTest extends TestCase
                              'var3'           => 'test',
                              'var4'           => 'BERLIOZ',
                              'var5'           => '%extends:config.1.json, config.2.json%',
-                             'var6'           => '%include:config.1.json%'],
+                             'var6'           => '%include:config.1.json%',
+                             'var7'           => false],
                             $config->get());
     }
 
@@ -110,5 +111,13 @@ class JsonConfigTest extends TestCase
         $this->assertTrue($config->has('var5'));
         $this->assertFalse($config->has('var5.var1'));
         $this->assertTrue($config->has('var6'));
+    }
+
+    public function testBooleanConversion()
+    {
+        $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.json'), true);
+        $this->assertEquals($config->get('debug'), $config->get('var7'));
+        $this->assertFalse($config->get('debug'));
+        $this->assertFalse($config->get('var7'));
     }
 }

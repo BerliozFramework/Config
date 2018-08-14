@@ -147,7 +147,27 @@ abstract class AbstractConfig implements ConfigInterface
                         $subValue = $this->get($match['var']);
                     }
 
+                    // Booleans
+                    if ($subValue === true) {
+                        $subValue = 'true';
+                    }
+                    if ($subValue === false) {
+                        $subValue = 'false';
+                    }
+
                     $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
+                }
+
+                if (in_array($value, ['true', 'false'], true)) {
+                    $value = $value == 'true';
+                } else {
+                    if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
+                        $value = intval($value);
+                    } else {
+                        if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
+                            $value = floatval($value);
+                        }
+                    }
                 }
 
                 $this->replaceVariables($value);
