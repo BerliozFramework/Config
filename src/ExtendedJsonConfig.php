@@ -10,6 +10,8 @@
  * file that was distributed with this source code, to the root.
  */
 
+declare(strict_types=1);
+
 namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
@@ -70,7 +72,7 @@ class ExtendedJsonConfig extends JsonConfig
                     throw new ConfigException(sprintf('Recursive configuration inclusion/extend for file "%s"', $path ?? $json));
                 }
 
-                $configuration = array_replace_recursive($this->loadUrl($json), $configuration);
+                $configuration = b_array_merge_recursive($this->loadUrl($json), $configuration);
 
                 // Get @extends value
                 $extends = $json = $configuration['@extends'] ?? false;
@@ -138,7 +140,7 @@ class ExtendedJsonConfig extends JsonConfig
                                 },
                                 $files);
 
-                            $value = call_user_func_array('array_replace_recursive', $files);
+                            $value = call_user_func_array('b_array_merge_recursive', $files);
                             break;
                     }
                 } catch (\Exception $e) {
