@@ -21,10 +21,17 @@
     }
   },
   "require": {
-    "php": ">=7.1",
+    "php": "^7.1",
     "berlioz/utils": "dev-develop"
   },
   "require-dev": {
-    "phpunit/phpunit": "~7.2"
+    "phpunit/phpunit": "^7.2"
+  },
+  "config": {
+    "platform": {
+      "php": "7.1.0"
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
   }
 }
