@@ -137,41 +137,43 @@ abstract class AbstractConfig implements ConfigInterface
      */
     protected function replaceVariables(&$value)
     {
-        if (is_string($value)) {
-            // Variables
-            $matches = [];
-            if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) > 0) {
-                foreach ($matches as $match) {
-                    // Is variable ?
-                    if (is_null($subValue = $this->getVariable($match['var']))) {
-                        $subValue = $this->get($match['var']);
-                    }
+        if (!is_string($value)) {
+            return;
+        }
 
-                    // Booleans
-                    if ($subValue === true) {
-                        $subValue = 'true';
-                    }
-                    if ($subValue === false) {
-                        $subValue = 'false';
-                    }
-
-                    $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
+        // Variables
+        $matches = [];
+        if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) > 0) {
+            foreach ($matches as $match) {
+                // Is variable ?
+                if (is_null($subValue = $this->getVariable($match['var']))) {
+                    $subValue = $this->get($match['var']);
                 }
 
-                if (in_array($value, ['true', 'false'], true)) {
-                    $value = $value == 'true';
-                } else {
-                    if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-                        $value = intval($value);
-                    } else {
-                        if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-                            $value = floatval($value);
-                        }
-                    }
+                // Booleans
+                if ($subValue === true) {
+                    $subValue = 'true';
+                }
+                if ($subValue === false) {
+                    $subValue = 'false';
                 }
 
-                $this->replaceVariables($value);
+                $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
             }
+
+            if (in_array($value, ['true', 'false'], true)) {
+                $value = $value == 'true';
+            } else {
+                if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
+                    $value = intval($value);
+                } else {
+                    if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
+                        $value = floatval($value);
+                    }
+                }
+            }
+
+            $this->replaceVariables($value);
         }
     }
 }
