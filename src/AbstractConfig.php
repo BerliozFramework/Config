@@ -50,10 +50,9 @@ abstract class AbstractConfig implements ConfigInterface
     {
         try {
             if (!is_null($key)) {
-                $key = explode('.', $key);
-                $value = b_array_traverse($this->configuration, $key, $exists);
+                $value = b_array_traverse_get($this->configuration, $key);
 
-                if ($exists === false) {
+                if (is_null($value)) {
                     $value = $default;
                 }
             } else {
@@ -69,7 +68,7 @@ abstract class AbstractConfig implements ConfigInterface
 
             return $value;
         } catch (\Exception $e) {
-            throw new ConfigException(sprintf('Unable to get "%s" key in configuration file', implode('.', $key)));
+            throw new ConfigException(sprintf('Unable to get "%s" key in configuration file', $key));
         }
     }
 
@@ -79,13 +78,10 @@ abstract class AbstractConfig implements ConfigInterface
     public function has(string $key = null): bool
     {
         try {
-            $key = explode('.', $key);
-            b_array_traverse($this->configuration, $key, $exists);
+            return !is_null(b_array_traverse_get($this->configuration, $key));
         } catch (\Exception $e) {
-            $exists = false;
+            return false;
         }
-
-        return $exists;
     }
 
     /**
