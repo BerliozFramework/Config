@@ -16,6 +16,11 @@ namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
 
+/**
+ * Class AbstractConfig.
+ *
+ * @package Berlioz\Config
+ */
 abstract class AbstractConfig implements ConfigInterface
 {
     const TAG = '%';
@@ -43,20 +48,23 @@ abstract class AbstractConfig implements ConfigInterface
         }
     }
 
+    //////////////
+    /// GETTER ///
+    //////////////
+
     /**
      * @inheritdoc
      */
     public function get(string $key = null, $default = null)
     {
         try {
+            $value = $this->configuration;
             if (!is_null($key)) {
-                $value = b_array_traverse_get($this->configuration, $key);
+                $value = b_array_traverse_get($value, $key);
 
                 if (is_null($value)) {
                     $value = $default;
                 }
-            } else {
-                $value = $this->configuration;
             }
 
             // Do replacement of variables names
@@ -83,6 +91,10 @@ abstract class AbstractConfig implements ConfigInterface
             return false;
         }
     }
+
+    /////////////////
+    /// VARIABLES ///
+    /////////////////
 
     /**
      * @inheritdoc
@@ -139,37 +151,39 @@ abstract class AbstractConfig implements ConfigInterface
 
         // Variables
         $matches = [];
-        if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) > 0) {
-            foreach ($matches as $match) {
-                // Is variable ?
-                if (is_null($subValue = $this->getVariable($match['var']))) {
-                    $subValue = $this->get($match['var']);
-                }
-
-                // Booleans
-                if ($subValue === true) {
-                    $subValue = 'true';
-                }
-                if ($subValue === false) {
-                    $subValue = 'false';
-                }
-
-                $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
-            }
-
-            if (in_array($value, ['true', 'false'], true)) {
-                $value = $value == 'true';
-            } else {
-                if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-                    $value = intval($value);
-                } else {
-                    if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-                        $value = floatval($value);
-                    }
-                }
-            }
-
-            $this->replaceVariables($value);
+        if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) == 0) {
+            return;
         }
+
+        foreach ($matches as $match) {
+            // Is variable ?
+            if (is_null($subValue = $this->getVariable($match['var']))) {
+                $subValue = $this->get($match['var']);
+            }
+
+            // Booleans
+            if ($subValue === true) {
+                $subValue = 'true';
+            }
+            if ($subValue === false) {
+                $subValue = 'false';
+            }
+
+            $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
+        }
+
+        if (in_array($value, ['true', 'false'], true)) {
+            $value = $value == 'true';
+        } else {
+            if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
+                $value = intval($value);
+            } else {
+                if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
+                    $value = floatval($value);
+                }
+            }
+        }
+
+        $this->replaceVariables($value);
     }
 }
