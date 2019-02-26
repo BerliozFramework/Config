@@ -71,6 +71,7 @@ class JsonConfig extends AbstractConfig
      */
     protected function loadJson(string $json): array
     {
+        $json = preg_replace('#^\s*//.*$\v?#mx', '', $json);
         $configuration = json_decode($json, true);
 
         if (!is_array($configuration)) {

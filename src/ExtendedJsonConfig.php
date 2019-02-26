@@ -99,16 +99,6 @@ class ExtendedJsonConfig extends JsonConfig
         return $configuration;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function loadJson(string $json): array
-    {
-        $json = preg_replace('#^\s*//.*$\v?#mx', '', $json);
-
-        return parent::loadJson($json);
-    }
-
     ////////////////////////////
     /// INCLUSIONS & ACTIONS ///
     ////////////////////////////
