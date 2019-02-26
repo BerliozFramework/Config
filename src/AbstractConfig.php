@@ -48,6 +48,16 @@ abstract class AbstractConfig implements ConfigInterface
         }
     }
 
+    /**
+     * PHP magic method __debugInfo().
+     *
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        return [];
+    }
+
     /////////////
     /// MERGE ///
     /////////////
