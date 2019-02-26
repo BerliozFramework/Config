@@ -48,9 +48,34 @@ abstract class AbstractConfig implements ConfigInterface
         }
     }
 
+    /////////////
+    /// MERGE ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function merge(ConfigInterface ...$config)
+    {
+        foreach ($config as $aConfig) {
+            $this->configuration = b_array_merge_recursive($this->configuration, $aConfig->original());
+            $this->userDefinedVariables = array_replace($this->userDefinedVariables, $aConfig->getVariables());
+        }
+
+        return $this;
+    }
+
     //////////////
     /// GETTER ///
     //////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function original(): array
+    {
+        return $this->configuration ?? [];
+    }
 
     /**
      * @inheritdoc
@@ -114,6 +139,14 @@ abstract class AbstractConfig implements ConfigInterface
         $this->userDefinedVariables[$name] = $value;
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getVariables(): array
+    {
+        return $this->userDefinedVariables ?? [];
     }
 
     /**

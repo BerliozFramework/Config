@@ -16,6 +16,32 @@ namespace Berlioz\Config;
 
 interface ConfigInterface
 {
+    /////////////
+    /// MERGE ///
+    /////////////
+
+    /**
+     * Merge with another configuration.
+     *
+     * @param \Berlioz\Config\ConfigInterface ...$config
+     *
+     * @return static
+     */
+    public function merge(ConfigInterface ...$config);
+
+    //////////////
+    /// GETTER ///
+    //////////////
+
+    /**
+     * Get original configuration.
+     *
+     * Returns original configuration without treatments of variables.
+     *
+     * @return array
+     */
+    public function original(): array;
+
     /**
      * Get value.
      *
@@ -42,6 +68,10 @@ interface ConfigInterface
      */
     public function has(string $key = null): bool;
 
+    /////////////////
+    /// VARIABLES ///
+    /////////////////
+
     /**
      * Set user defined variables.
      *
@@ -60,6 +90,13 @@ interface ConfigInterface
      * @return static
      */
     public function setVariable(string $name, $value);
+
+    /**
+     * Get user defined variable.
+     *
+     * @return array
+     */
+    public function getVariables(): array;
 
     /**
      * Get user defined variable.
