@@ -189,6 +189,6 @@ class JsonConfigTest extends TestCase
         $varDump = ob_get_contents();
         ob_end_clean();
 
-        $this->assertRegExp('/^object\(Berlioz\\\\Config\\\\JsonConfig\)\#\d+ \(0\) \{\s+\}$/mi', trim($varDump), 'Empty var_dump()');
+        $this->assertRegExp('/^(class Berlioz\\\\Config\\\\JsonConfig|object\(Berlioz\\\\Config\\\\JsonConfig\))\#\d+ \(0\) \{\s+\}$/mi', trim($varDump), 'Empty var_dump()');
     }
 }
