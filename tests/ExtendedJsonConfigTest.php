@@ -71,6 +71,9 @@ class ExtendedJsonConfigTest extends TestCase
 
         // Test include
         $this->assertEquals(true, $config->get('var6.var1'));
+
+        // Test env
+        $this->assertEquals('BAR', $config->get('envtest'));
     }
 
     /**
