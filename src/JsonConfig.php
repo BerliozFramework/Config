@@ -30,8 +30,8 @@ class JsonConfig extends AbstractConfig
     /**
      * JsonConfig constructor.
      *
-     * @param string $json      JSON data
-     * @param bool   $jsonIsUrl If JSON data is URL? (default: false)
+     * @param string $json JSON data
+     * @param bool $jsonIsUrl If JSON data is URL? (default: false)
      *
      * @throws \Berlioz\Config\Exception\ConfigException
      */
@@ -46,8 +46,8 @@ class JsonConfig extends AbstractConfig
     /**
      * Load configuration.
      *
-     * @param string $json      JSON data
-     * @param bool   $jsonIsUrl If JSON data is URL? (default: false)
+     * @param string $json JSON data
+     * @param bool $jsonIsUrl If JSON data is URL? (default: false)
      *
      * @return array
      * @throws \Berlioz\Config\Exception\ConfigException If unable to load configuration file

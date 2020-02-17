@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
+use Exception;
 
 /**
  * Class AbstractConfig.
@@ -23,18 +24,20 @@ use Berlioz\Config\Exception\ConfigException;
  */
 abstract class AbstractConfig implements ConfigInterface
 {
-    const TAG = '%';
+    protected const TAG = '%';
     /** @var array Configuration */
     protected $configuration;
     /** @var array Default variables */
-    protected $defaultVariables = ['best_framework'      => 'BERLIOZ',
-                                   'php_version'         => PHP_VERSION,
-                                   'php_version_id'      => PHP_VERSION_ID,
-                                   'php_major_version'   => PHP_MAJOR_VERSION,
-                                   'php_minor_version'   => PHP_MINOR_VERSION,
-                                   'php_release_version' => PHP_RELEASE_VERSION,
-                                   'php_sapi'            => PHP_SAPI,
-                                   'system_os'           => PHP_OS];
+    protected $defaultVariables = [
+        'best_framework' => 'BERLIOZ',
+        'php_version' => PHP_VERSION,
+        'php_version_id' => PHP_VERSION_ID,
+        'php_major_version' => PHP_MAJOR_VERSION,
+        'php_minor_version' => PHP_MINOR_VERSION,
+        'php_release_version' => PHP_RELEASE_VERSION,
+        'php_sapi' => PHP_SAPI,
+        'system_os' => PHP_OS
+    ];
     /** @var array User defined variables */
     private $userDefinedVariables = [];
 
@@ -94,10 +97,10 @@ abstract class AbstractConfig implements ConfigInterface
     {
         try {
             $value = $this->configuration;
-            if (!is_null($key)) {
+            if (null !== $key) {
                 $value = b_array_traverse_get($value, $key);
 
-                if (is_null($value)) {
+                if (null === $value) {
                     $value = $default;
                 }
             }
@@ -110,7 +113,9 @@ abstract class AbstractConfig implements ConfigInterface
             }
 
             return $value;
-        } catch (\Exception $e) {
+        } catch (ConfigException $e) {
+            throw $e;
+        } catch (Exception $e) {
             throw new ConfigException(sprintf('Unable to get "%s" key in configuration file', $key));
         }
     }
@@ -121,8 +126,8 @@ abstract class AbstractConfig implements ConfigInterface
     public function has(string $key = null): bool
     {
         try {
-            return !is_null(b_array_traverse_get($this->configuration, $key));
-        } catch (\Exception $e) {
+            return null !== b_array_traverse_get($this->configuration, $key);
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -174,9 +179,10 @@ abstract class AbstractConfig implements ConfigInterface
      */
     public function getVariable(string $name, $default = null)
     {
-        return $this->defaultVariables[$name] ??
-               $this->userDefinedVariables[$name] ??
-               $default;
+        return
+            $this->defaultVariables[$name] ??
+            $this->userDefinedVariables[$name] ??
+            $default;
     }
 
     /**
@@ -194,13 +200,18 @@ abstract class AbstractConfig implements ConfigInterface
 
         // Variables
         $matches = [];
-        if (preg_match_all(sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)), $value, $matches, PREG_SET_ORDER) == 0) {
+        if (preg_match_all(
+                sprintf('/%1$s(?<var>[\w\-\.\,\s]+)%1$s/i', preg_quote(self::TAG)),
+                $value,
+                $matches,
+                PREG_SET_ORDER
+            ) == 0) {
             return;
         }
 
         foreach ($matches as $match) {
             // Is variable ?
-            if (is_null($subValue = $this->getVariable($match['var']))) {
+            if (null === ($subValue = $this->getVariable($match['var']))) {
                 $subValue = $this->get($match['var']);
             }
 
@@ -217,14 +228,10 @@ abstract class AbstractConfig implements ConfigInterface
 
         if (in_array($value, ['true', 'false'], true)) {
             $value = $value == 'true';
-        } else {
-            if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-                $value = intval($value);
-            } else {
-                if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-                    $value = floatval($value);
-                }
-            }
+        } elseif (filter_var($value, FILTER_VALIDATE_INT) !== false) {
+            $value = intval($value);
+        } elseif (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
+            $value = floatval($value);
         }
 
         $this->replaceVariables($value);

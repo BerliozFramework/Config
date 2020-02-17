@@ -53,6 +53,6 @@ trait ConfigAwareTrait
      */
     public function hasConfig(): bool
     {
-        return !is_null($this->config);
+        return null !== $this->config;
     }
 }

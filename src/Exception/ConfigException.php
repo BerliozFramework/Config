@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Berlioz\Config\Exception;
 
-class ConfigException extends \Exception
+use Exception;
+
+class ConfigException extends Exception
 {
 }

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
+use Exception;
 
 /**
  * Class ExtendedJsonConfig.
@@ -42,8 +43,8 @@ class ExtendedJsonConfig extends JsonConfig
     /**
      * Load configuration.
      *
-     * @param string      $json          JSON data
-     * @param bool        $jsonIsUrl     If JSON data is URL? (default: false)
+     * @param string $json JSON data
+     * @param bool $jsonIsUrl If JSON data is URL? (default: false)
      * @param string|null $baseDirectory Base directory to get JSON file
      *
      * @return array
@@ -68,7 +69,9 @@ class ExtendedJsonConfig extends JsonConfig
 
             // Check recursive file call
             if (in_array($json, $this->jsonLoading)) {
-                throw new ConfigException(sprintf('Recursive configuration inclusion/extend for file "%s"', $path ?? $json));
+                throw new ConfigException(
+                    sprintf('Recursive configuration inclusion/extend for file "%s"', $path ?? $json)
+                );
             }
 
             $configuration = b_array_merge_recursive($this->loadUrl($json), $configuration);
@@ -113,7 +116,11 @@ class ExtendedJsonConfig extends JsonConfig
         }
 
         $matches = [];
-        if (preg_match(sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\_\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)), $value, $matches) != 1) {
+        if (preg_match(
+                sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\_\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)),
+                $value,
+                $matches
+            ) != 1) {
             return;
         }
 
@@ -129,7 +136,8 @@ class ExtendedJsonConfig extends JsonConfig
                         function ($file) use ($baseDirectory) {
                             return $this->load($file, true, $baseDirectory);
                         },
-                        $files);
+                        $files
+                    );
 
                     $value = call_user_func_array('b_array_merge_recursive', $files);
                     break;
@@ -141,14 +149,18 @@ class ExtendedJsonConfig extends JsonConfig
                         throw new ConfigException(sprintf('Unknown action "%s" in config file', $matches['action']));
                     }
 
-                    $value = call_user_func_array(self::$userDefinedActions[$matches['action']],
-                                                  [$matches['var'],
-                                                      $this,
-                                                      $baseDirectory]);
+                    $value = call_user_func_array(
+                        self::$userDefinedActions[$matches['action']],
+                        [
+                            $matches['var'],
+                            $this,
+                            $baseDirectory
+                        ]
+                    );
             }
         } catch (ConfigException $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new ConfigException(sprintf('Unable to do action of config line "%s"', $value), 0, $e);
         }
     }
@@ -156,7 +168,7 @@ class ExtendedJsonConfig extends JsonConfig
     /**
      * Add action.
      *
-     * @param string   $name     Action name
+     * @param string $name Action name
      * @param callable $callback Callback
      */
     public static function addAction(string $name, callable $callback)

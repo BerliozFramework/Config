@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Berlioz\Config;
 
+/**
+ * Describes a config-aware instance.
+ */
 interface ConfigAwareInterface
 {
     /**
@@ -27,7 +30,6 @@ interface ConfigAwareInterface
      * Set config.
      *
      * @param \Berlioz\Config\ConfigInterface $config
-     *
      *
      * @return static
      */

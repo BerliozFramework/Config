@@ -48,8 +48,8 @@ interface ConfigInterface
      * Key given in parameter must be in format: key.key2.key3
      * If key NULL given, full configuration given.
      *
-     * @param string $key     Key
-     * @param mixed  $default Default value to return if the key does not exist.
+     * @param string $key Key
+     * @param mixed $default Default value to return if the key does not exist.
      *
      * @return mixed
      * @throws \Berlioz\Config\Exception\ConfigException
@@ -85,7 +85,7 @@ interface ConfigInterface
      * Set user defined variable.
      *
      * @param string $name
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return static
      */
@@ -102,7 +102,7 @@ interface ConfigInterface
      * Get user defined variable.
      *
      * @param string $name
-     * @param mixed  $default Default value to return if the key does not exist.
+     * @param mixed $default Default value to return if the key does not exist.
      *
      * @return mixed
      */
