@@ -178,19 +178,4 @@ class JsonConfigTest extends TestCase
                              'userdefined3' => 'Berlioz3'],
                             $config->getVariables());
     }
-
-    /**
-     * @throws \Berlioz\Config\Exception\ConfigException
-     */
-    public function testVarDump()
-    {
-        $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.json'), true);
-
-        ob_start();
-        var_dump($config);
-        $varDump = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertRegExp('/^(class Berlioz\\\\Config\\\\JsonConfig|object\(Berlioz\\\\Config\\\\JsonConfig\))\#\d+ \(0\) \{\s+\}$/mi', trim($varDump), 'Empty var_dump()');
-    }
 }
