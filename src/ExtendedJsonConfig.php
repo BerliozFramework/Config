@@ -117,7 +117,7 @@ class ExtendedJsonConfig extends JsonConfig
 
         $matches = [];
         if (preg_match(
-                sprintf('/^\s*%1$s(?<action>[\w\-\.]+)\:(?<var>[\w\-\_\.\,\s]+)%1$s\s*$/i', preg_quote(self::TAG)),
+                sprintf('/^\s*%1$s(?<action>[\w\-.]+)\:(?<var>[\w\-_.:,\\\\\s]+)%1$s\s*$/i', preg_quote(self::TAG)),
                 $value,
                 $matches
             ) != 1) {
@@ -143,6 +143,10 @@ class ExtendedJsonConfig extends JsonConfig
                     break;
                 case 'env':
                     $value = getenv($matches['var']);
+                    break;
+                case 'const':
+                case 'constant':
+                    $value = constant($matches['var']);
                     break;
                 default:
                     if (!isset(self::$userDefinedActions[$matches['action']])) {
