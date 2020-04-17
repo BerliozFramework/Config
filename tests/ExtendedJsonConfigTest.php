@@ -112,7 +112,7 @@ class ExtendedJsonConfigTest extends TestCase
         $this->assertFalse($config->has('var23.var1'));
         $this->assertTrue($config->has('var5.var1'));
         $this->assertEquals('warning', $config->get('log'));
-        $this->assertTrue($config->get('debug'));
+        $this->assertEquals(['127.0.0.1', '127.0.0.2'], $config->get('debug'));
     }
 
     public function testConfigUserDefinedAction()
