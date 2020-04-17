@@ -100,12 +100,14 @@ You can also define your own variables with the methods:
 ## Extended JSON format
 
 We created an extended format of the JSON format.
-Just to include or extends JSON files.
+Just to do actions like include or extends JSON files.
 
 ### Syntax
 
 * Include another file: `%include:filename.json%`
-* Extends files: `%extends:filename.json, filename2.json, filename3.json%`
+* Extends a file: `%extends:filename.json, filename2.json, filename3.json%`
+* Replace by an env variable: `%env:VAR_NAME%`
+* Replace by a constant: `%const:VAR_NAME%` or `%constant:VAR_NAME%` 
 * Allow inline comments : `// My comment` (comment must be alone on a line) 
 
 You can define your own actions with static method `ExtendedJsonConfig::addAction(string $name, callable $callback)`.
