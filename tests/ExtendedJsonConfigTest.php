@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 class ExtendedJsonConfigTest extends TestCase
 {
+    public const TEST_CONSTANT = 'foobar';
+
     /**
      * @throws \Berlioz\Config\Exception\ConfigException
      */
@@ -74,6 +76,10 @@ class ExtendedJsonConfigTest extends TestCase
 
         // Test env
         $this->assertEquals('BAR', $config->get('envtest'));
+
+        // Test constant
+        $this->assertEquals(PHP_VERSION, $config->get('consttest1'));
+        $this->assertEquals('foobar', $config->get('consttest2'));
     }
 
     /**
@@ -94,6 +100,7 @@ class ExtendedJsonConfigTest extends TestCase
         $this->assertFalse($config->has('var23.var1'));
         $this->assertTrue($config->has('var5.var1'));
         $this->assertTrue($config->has('var6.var1'));
+        $this->assertTrue($config->has('var1.var1-3'));
     }
 
     /**
@@ -105,15 +112,17 @@ class ExtendedJsonConfigTest extends TestCase
         $this->assertFalse($config->has('var23.var1'));
         $this->assertTrue($config->has('var5.var1'));
         $this->assertEquals('warning', $config->get('log'));
-        $this->assertTrue($config->get('debug'));
+        $this->assertEquals(['127.0.0.1', '127.0.0.2'], $config->get('debug'));
     }
 
     public function testConfigUserDefinedAction()
     {
-        ExtendedJsonConfig::addAction('actionTest',
+        ExtendedJsonConfig::addAction(
+            'actionTest',
             function ($value) {
                 return intval($value) * 2;
-            });
+            }
+        );
         $config = new ExtendedJsonConfig(sprintf('%s%s', __DIR__, '/files/config.extended2.json'), true);
         $this->assertEquals(10, $config->get('action'));
     }

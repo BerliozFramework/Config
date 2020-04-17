@@ -72,9 +72,13 @@ class JsonConfigTest extends TestCase
         $config1 = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.1.json'), true);
         $config2 = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.2.json'), true);
         $config1->merge($config2);
-        $this->assertEquals(['var1' => false,
-                             'var2' => '%directory_root%'],
-                            $config1->original());
+        $this->assertEquals(
+            [
+                'var1' => false,
+                'var2' => '%directory_root%'
+            ],
+            $config1->original()
+        );
     }
 
     /**
@@ -83,21 +87,29 @@ class JsonConfigTest extends TestCase
     public function testOriginal()
     {
         $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.json'), true);
-        $this->assertEquals(['directory_root' => 'test',
-                             'debug'          => false,
-                             'log'            => 'warning',
-                             'envtest'        => '%env:BERLIOZ_FOO%',
-                             'var1'           => ['var1-1' => 'value1-1',
-                                                  'var1-2' => 'value1-2',
-                                                  'var1-3' => 'value1-3'],
-                             'var2'           => '%var1.var1-1%+value2',
-                             'var3'           => '%directory_root%',
-                             'var4'           => '%best_framework%',
-                             'var5'           => '%extends:config.1.json, config.2.json%',
-                             'var6'           => '%include:config.1.json%',
-                             'var7'           => '%debug%',
-                             'var8'           => '%userdefined%'],
-                            $config->original());
+        $this->assertEquals(
+            [
+                'directory_root' => 'test',
+                'debug' => false,
+                'log' => 'warning',
+                'envtest' => '%env:BERLIOZ_FOO%',
+                'var1' => [
+                    'var1-1' => 'value1-1',
+                    'var1-2' => 'value1-2',
+                    'var1-3' => 'value1-3'
+                ],
+                'var2' => '%var1.var1-1%+value2',
+                'var3' => '%directory_root%',
+                'var4' => '%best_framework%',
+                'var5' => '%extends:config.1.json, config.2.json%',
+                'var6' => '%include:config.1.json%',
+                'var7' => '%debug%',
+                'var8' => '%userdefined%',
+                'consttest1' => '%constant:PHP_VERSION%',
+                'consttest2' => '%const:\\Berlioz\\Config\\Tests\\ExtendedJsonConfigTest::TEST_CONSTANT%'
+            ],
+            $config->original()
+        );
     }
 
     /**
@@ -113,21 +125,29 @@ class JsonConfigTest extends TestCase
         $this->assertEquals('%extends:config.1.json, config.2.json%', $config->get('var5'));
         $this->assertEquals('%include:config.1.json%', $config->get('var6'));
 
-        $this->assertEquals(['directory_root' => 'test',
-                             'debug'          => false,
-                             'log'            => 'warning',
-                             'envtest'        => '%env:BERLIOZ_FOO%',
-                             'var1'           => ['var1-1' => 'value1-1',
-                                                  'var1-2' => 'value1-2',
-                                                  'var1-3' => 'value1-3'],
-                             'var2'           => 'value1-1+value2',
-                             'var3'           => 'test',
-                             'var4'           => 'BERLIOZ',
-                             'var5'           => '%extends:config.1.json, config.2.json%',
-                             'var6'           => '%include:config.1.json%',
-                             'var7'           => false,
-                             'var8'           => ''],
-                            $config->get());
+        $this->assertEquals(
+            [
+                'directory_root' => 'test',
+                'debug' => false,
+                'log' => 'warning',
+                'envtest' => '%env:BERLIOZ_FOO%',
+                'var1' => [
+                    'var1-1' => 'value1-1',
+                    'var1-2' => 'value1-2',
+                    'var1-3' => 'value1-3'
+                ],
+                'var2' => 'value1-1+value2',
+                'var3' => 'test',
+                'var4' => 'BERLIOZ',
+                'var5' => '%extends:config.1.json, config.2.json%',
+                'var6' => '%include:config.1.json%',
+                'var7' => false,
+                'var8' => '',
+                'consttest1' => '%constant:PHP_VERSION%',
+                'consttest2' => '%const:\\Berlioz\\Config\\Tests\\ExtendedJsonConfigTest::TEST_CONSTANT%'
+            ],
+            $config->get()
+        );
     }
 
     /**
@@ -170,12 +190,25 @@ class JsonConfigTest extends TestCase
         $config = new JsonConfig(sprintf('%s%s', __DIR__, '/files/config.json'), true);
         $this->assertEquals($config, $config->setVariable('userdefined', 'Berlioz'));
         $this->assertEquals('Berlioz', $config->getVariable('userdefined'));
-        $this->assertEquals(['userdefined' => 'Berlioz'],
-                            $config->getVariables());
-        $this->assertEquals($config, $config->setVariables(['userdefined2' => 'Berlioz2',
-                                                            'userdefined3' => 'Berlioz3']));
-        $this->assertEquals(['userdefined2' => 'Berlioz2',
-                             'userdefined3' => 'Berlioz3'],
-                            $config->getVariables());
+        $this->assertEquals(
+            ['userdefined' => 'Berlioz'],
+            $config->getVariables()
+        );
+        $this->assertEquals(
+            $config,
+            $config->setVariables(
+                [
+                    'userdefined2' => 'Berlioz2',
+                    'userdefined3' => 'Berlioz3'
+                ]
+            )
+        );
+        $this->assertEquals(
+            [
+                'userdefined2' => 'Berlioz2',
+                'userdefined3' => 'Berlioz3'
+            ],
+            $config->getVariables()
+        );
     }
 }
