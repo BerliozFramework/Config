@@ -16,5 +16,7 @@
   "var5": "%extends:config.1.json, config.2.json%",
   "var6": "%include:config.1.json%",
   "var7": "%debug%",
-  "var8": "%userdefined%"
+  "var8": "%userdefined%",
+  "var9": null,
+  "var10": "%var9%"
 }

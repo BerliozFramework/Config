@@ -106,7 +106,9 @@ class JsonConfigTest extends TestCase
                 'var7' => '%debug%',
                 'var8' => '%userdefined%',
                 'consttest1' => '%constant:PHP_VERSION%',
-                'consttest2' => '%const:\\Berlioz\\Config\\Tests\\ExtendedJsonConfigTest::TEST_CONSTANT%'
+                'consttest2' => '%const:\\Berlioz\\Config\\Tests\\ExtendedJsonConfigTest::TEST_CONSTANT%',
+                'var9' => null,
+                'var10' => '%var9%'
             ],
             $config->original()
         );
@@ -144,7 +146,9 @@ class JsonConfigTest extends TestCase
                 'var7' => false,
                 'var8' => '',
                 'consttest1' => '%constant:PHP_VERSION%',
-                'consttest2' => '%const:\\Berlioz\\Config\\Tests\\ExtendedJsonConfigTest::TEST_CONSTANT%'
+                'consttest2' => '%const:\\Berlioz\\Config\\Tests\\ExtendedJsonConfigTest::TEST_CONSTANT%',
+                'var9' => null,
+                'var10' => ''
             ],
             $config->get()
         );

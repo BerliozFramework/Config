@@ -223,7 +223,7 @@ abstract class AbstractConfig implements ConfigInterface
                 $subValue = 'false';
             }
 
-            $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue, $value);
+            $value = str_replace(sprintf('%2$s%1$s%2$s', $match['var'], self::TAG), $subValue ?? '', $value);
         }
 
         if (in_array($value, ['true', 'false'], true)) {
