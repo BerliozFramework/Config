@@ -20,7 +20,7 @@ $ composer require berlioz/config
 
 ### Dependencies
 
-* **PHP** >= 7.1
+* **PHP** ^7.1 || ^8.0
 * PHP libraries:
   * **ext-json**
 * Packages:
