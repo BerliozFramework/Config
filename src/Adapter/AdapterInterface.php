@@ -12,10 +12,21 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\Config\Exception;
+namespace Berlioz\Config\Adapter;
 
-use Exception;
+use Berlioz\Config\ConfigInterface;
 
-class ConfigException extends Exception
+/**
+ * Interface AdapterInterface.
+ */
+interface AdapterInterface extends ConfigInterface
 {
+    /**
+     * Get priority of configuration.
+     *
+     * Values are gotten on high priority config first.
+     *
+     * @return int
+     */
+    public function getPriority(): int;
 }

@@ -10,12 +10,15 @@
  * file that was distributed with this source code, to the root.
  */
 
-declare(strict_types=1);
+namespace Berlioz\Config\Tests;
 
-namespace Berlioz\Config\Exception;
+use Berlioz\Config\Config;
+use Berlioz\Config\ConfigFunction\ConfigFunctionSet;
 
-use Exception;
-
-class ConfigException extends Exception
+class FakeConfig extends Config
 {
+    public function getFunctions(): ConfigFunctionSet
+    {
+        return $this->functions;
+    }
 }

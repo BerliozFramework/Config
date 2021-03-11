@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -19,13 +19,12 @@ namespace Berlioz\Config;
  */
 trait ConfigAwareTrait
 {
-    /** @var \Berlioz\Config\ConfigInterface Config */
-    protected $config;
+    protected ConfigInterface|null $config = null;
 
     /**
      * Get config.
      *
-     * @return \Berlioz\Config\ConfigInterface|null
+     * @return ConfigInterface|null
      */
     public function getConfig(): ?ConfigInterface
     {
@@ -35,11 +34,11 @@ trait ConfigAwareTrait
     /**
      * Set config.
      *
-     * @param \Berlioz\Config\ConfigInterface $config
+     * @param ConfigInterface $config
      *
      * @return static
      */
-    public function setConfig(ConfigInterface $config)
+    public function setConfig(ConfigInterface $config): static
     {
         $this->config = $config;
 

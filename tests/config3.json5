@@ -1,0 +1,14 @@
+{
+  "foo": "ERASE ARRAY",
+  "bar": ["ERASE STRING"],
+  "qux": "QUX VALUE",
+  "section": {
+    "qux": [
+      "{var:QUX}",
+      "{= QUX}",
+    ]
+  },
+  "section2": {
+    "bar": "{config:section.foo}",
+  }
+}
