@@ -13,11 +13,12 @@
 namespace Berlioz\Config\Tests\Adapter;
 
 use Berlioz\Config\Adapter\ArrayAdapter;
+use Berlioz\Config\Exception\ConfigException;
 use PHPUnit\Framework\TestCase;
 
 class ArrayAdapterTest extends TestCase
 {
-    public function test()
+    public function testLoadArray()
     {
         $adapter = new ArrayAdapter(
             [
@@ -39,5 +40,22 @@ class ArrayAdapterTest extends TestCase
 
         $this->assertFalse($adapter->has('baz'));
         $this->assertTrue($adapter->has('section.foo'));
+    }
+
+    public function testLoadFile()
+    {
+        $adapter = new ArrayAdapter(__DIR__ . '/config.php');
+
+        $this->assertEquals('value1', $adapter->get('qux'));
+        $this->assertEquals('value', $adapter->get('section.foo'));
+        $this->assertEquals('value2', $adapter->get('section.qux'));
+        $this->assertEquals(['bar' => 'value3'], $adapter->get('section2'));
+    }
+
+    public function testLoadFileFailed()
+    {
+        $this->expectException(ConfigException::class);
+
+        new ArrayAdapter(__DIR__ . '/config-failed.php');
     }
 }

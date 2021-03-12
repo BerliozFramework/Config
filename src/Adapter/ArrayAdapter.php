@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Berlioz\Config\Adapter;
 
+use Berlioz\Config\Exception\ConfigException;
+
 /**
  * Class ArrayAdapter.
  */
@@ -22,12 +24,27 @@ class ArrayAdapter extends AbstractAdapter
     /**
      * ArrayAdapter constructor.
      *
-     * @param array $configuration
+     * @param array|string $configuration
      * @param int $priority
+     *
+     * @throws ConfigException
      */
-    public function __construct(array $configuration, int $priority = 0)
+    public function __construct(array|string $configuration, int $priority = 0)
     {
         parent::__construct($priority);
+
+        if (is_string($configuration)) {
+            $file = $configuration;
+
+            ob_start();
+            $configuration = @include($file);
+            ob_end_clean();
+
+            if (!is_array($configuration)) {
+                throw new ConfigException(sprintf('Not a valid PHP array in "%s" file', $file));
+            }
+        }
+
         $this->configuration = $configuration;
     }
 }

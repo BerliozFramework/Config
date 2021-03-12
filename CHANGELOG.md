@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file. This projec
 to [Semantic Versioning] (http://semver.org/). For change log format,
 use [Keep a Changelog] (http://keepachangelog.com/).
 
-## [2.0.0-alpha1]
+## [2.0.0-alpha2] - 2021-03-12
+
+### Changed
+
+- Allow a string at the configuration parameter in ArrayAdapter, to include a PHP file that returns an array
+
+## [2.0.0-alpha1] - 2021-03-11
 
 ### Added
 
