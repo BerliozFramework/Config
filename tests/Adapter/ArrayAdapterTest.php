@@ -58,4 +58,22 @@ class ArrayAdapterTest extends TestCase
 
         new ArrayAdapter(__DIR__ . '/config-failed.php');
     }
+
+    public function testGetArrayCopy()
+    {
+        $adapter = new ArrayAdapter(
+            $array = [
+                "qux" => "value1",
+                "section" => [
+                    "foo" => "value",
+                    "qux" => "value2"
+                ],
+                "section2" => [
+                    "bar" => "value3"
+                ],
+            ]
+        );
+
+        $this->assertEquals($array, $adapter->getArrayCopy());
+    }
 }

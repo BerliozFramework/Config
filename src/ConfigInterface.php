@@ -44,6 +44,15 @@ interface ConfigInterface
      * @param string $key Key
      *
      * @return bool
+     * @throws ConfigException
      */
     public function has(string $key): bool;
+
+    /**
+     * Get an array copy of configuration.
+     *
+     * @return array
+     * @throws ConfigException
+     */
+    public function getArrayCopy(): array;
 }

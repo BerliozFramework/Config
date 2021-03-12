@@ -146,6 +146,20 @@ class Config implements ConfigInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getArrayCopy(): array
+    {
+        $configArrays = array_map(fn(ConfigInterface $config) => $config->getArrayCopy(), $this->configs);
+        rsort($configArrays);
+        $configArray = b_array_merge_recursive(...$configArrays);
+        unset($configArrays);
+        $this->treatValue($configArray);
+
+        return $configArray;
+    }
+
+    /**
      * Treat value.
      *
      * @param mixed $value

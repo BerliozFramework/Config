@@ -111,4 +111,36 @@ class ConfigTest extends TestCase
         $this->assertTrue($config->has('section.qux'));
         $this->assertFalse($config->has('babar'));
     }
+
+    public function testGetArrayCopy()
+    {
+        $config = new FakeConfig(
+            [
+                new JsonAdapter(__DIR__ . '/config.json5', true, priority: 0),
+                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
+                new JsonAdapter(__DIR__ . '/config3.json5', true, priority: 10),
+            ],
+            variables: ['QUX' => 'QUX QUX QUX']
+        );
+        $array = [
+            "foo" => "ERASE ARRAY",
+            "bar" => ["ERASE STRING"],
+            "qux" => "QUX VALUE",
+            "section" => [
+                "foo" => "value",
+                "qux" => [
+                    "QUX QUX QUX",
+                    "QUX QUX QUX",
+                    "value2",
+                    "{not}",
+                ]
+            ],
+            "section2" => [
+                "bar" => "value"
+            ],
+            "baz" => true
+        ];
+
+        $this->assertEquals($array, $config->getArrayCopy());
+    }
 }

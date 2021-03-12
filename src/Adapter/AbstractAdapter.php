@@ -14,12 +14,10 @@ declare(strict_types=1);
 
 namespace Berlioz\Config\Adapter;
 
-use Berlioz\Config\ConfigInterface;
-
 /**
  * Class AbstractAdapter.
  */
-abstract class AbstractAdapter implements ConfigInterface
+abstract class AbstractAdapter implements AdapterInterface
 {
     protected array $configuration;
 
@@ -49,5 +47,13 @@ abstract class AbstractAdapter implements ConfigInterface
     public function has(string $key): bool
     {
         return b_array_traverse_exists($this->configuration, $key);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayCopy(): array
+    {
+        return $this->configuration;
     }
 }

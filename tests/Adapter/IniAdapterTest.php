@@ -66,4 +66,32 @@ EOF;
 
         new IniAdapter(__DIR__ . '/config-failed.ini', true);
     }
+
+    public function testGetArrayCopy()
+    {
+        $adapter = new IniAdapter(
+            <<<EOF
+qux= value1
+
+[section]
+foo= value
+qux = value2
+
+[section2]
+bar = value3
+EOF
+        );
+        $array = [
+            "qux" => "value1",
+            "section" => [
+                "foo" => "value",
+                "qux" => "value2"
+            ],
+            "section2" => [
+                "bar" => "value3"
+            ],
+        ];
+
+        $this->assertEquals($array, $adapter->getArrayCopy());
+    }
 }

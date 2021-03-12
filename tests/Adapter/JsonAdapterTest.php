@@ -20,7 +20,7 @@ class JsonAdapterTest extends TestCase
 {
     public function testLoadString()
     {
-        $ini = <<<EOF
+        $json = <<<EOF
 {
   "qux": "value1",
   "section": {
@@ -34,7 +34,7 @@ class JsonAdapterTest extends TestCase
 }
 EOF;
 
-        $adapter = new JsonAdapter($ini);
+        $adapter = new JsonAdapter($json);
 
         $this->assertEquals('value1', $adapter->get('qux'));
         $this->assertEquals('value', $adapter->get('section.foo'));
@@ -49,10 +49,10 @@ EOF;
     {
         $this->expectException(ConfigException::class);
 
-        $ini = <<<EOF
+        $json = <<<EOF
 {
 EOF;
-        new JsonAdapter($ini);
+        new JsonAdapter($json);
     }
 
     public function testLoadFile()
@@ -70,5 +70,36 @@ EOF;
         $this->expectException(ConfigException::class);
 
         new JsonAdapter(__DIR__ . '/config-failed.json5', true);
+    }
+
+    public function testGetArrayCopy()
+    {
+        $adapter = new JsonAdapter(
+            <<<EOF
+{
+  "qux": "value1",
+  "section": {
+    "foo": "value",
+    "qux": "value2"
+  },
+  "section2": {
+    // Comment
+    "bar": "value3"
+  },
+}
+EOF
+        );
+        $array = [
+            "qux" => "value1",
+            "section" => [
+                "foo" => "value",
+                "qux" => "value2"
+            ],
+            "section2" => [
+                "bar" => "value3"
+            ],
+        ];
+
+        $this->assertEquals($array, $adapter->getArrayCopy());
     }
 }
