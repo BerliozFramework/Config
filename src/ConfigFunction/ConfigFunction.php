@@ -37,7 +37,7 @@ class ConfigFunction implements ConfigFunctionInterface
     /**
      * @inheritDoc
      */
-    public function execute(string $str): array|string
+    public function execute(string $str): mixed
     {
         $value = $this->config->get($str, new LogicException(sprintf('Config path "%s" does not exists', $str)));
 
