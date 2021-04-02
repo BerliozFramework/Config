@@ -14,26 +14,30 @@ declare(strict_types=1);
 
 namespace Berlioz\Config\Adapter;
 
-use Berlioz\Config\ConfigInterface;
-
 /**
- * Interface AdapterInterface.
+ * Trait AdapterPriorityTrait.
  */
-interface AdapterInterface extends ConfigInterface
+trait AdapterPriorityTrait
 {
+    protected int $priority = 0;
+
     /**
-     * Get priority of configuration.
-     *
-     * Values are gotten on high priority config first.
+     * Get priority.
      *
      * @return int
      */
-    public function getPriority(): int;
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
 
     /**
-     * Set priority of configuration.
+     * Set priority.
      *
      * @param int $priority
      */
-    public function setPriority(int $priority): void;
+    public function setPriority(int $priority): void
+    {
+        $this->priority = $priority;
+    }
 }

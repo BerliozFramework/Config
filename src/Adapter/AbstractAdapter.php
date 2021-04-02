@@ -19,18 +19,13 @@ namespace Berlioz\Config\Adapter;
  */
 abstract class AbstractAdapter implements AdapterInterface
 {
+    use AdapterPriorityTrait;
+
     protected array $configuration;
 
-    public function __construct(protected int $priority = 0)
+    public function __construct(int $priority = 0)
     {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPriority(): int
-    {
-        return $this->priority;
+        $this->priority = $priority;
     }
 
     /**

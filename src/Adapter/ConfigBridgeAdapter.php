@@ -17,23 +17,12 @@ namespace Berlioz\Config\Adapter;
 use Berlioz\Config\ConfigInterface;
 
 /**
- * Interface AdapterInterface.
+ * Class ConfigBridgeAdapter.
  */
-interface AdapterInterface extends ConfigInterface
+class ConfigBridgeAdapter extends ArrayAdapter
 {
-    /**
-     * Get priority of configuration.
-     *
-     * Values are gotten on high priority config first.
-     *
-     * @return int
-     */
-    public function getPriority(): int;
-
-    /**
-     * Set priority of configuration.
-     *
-     * @param int $priority
-     */
-    public function setPriority(int $priority): void;
+    public function __construct(ConfigInterface $config, int $priority = 0)
+    {
+        parent::__construct($config->getArrayCopy(), $priority);
+    }
 }
