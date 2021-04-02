@@ -15,6 +15,11 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 - `Config::addConfig()` now only accepts `AdapterInterface`
 
+### Fixed
+
+- Fixed null returned value
+- Fixed returning type of ConfigFunction to mixed
+
 ## [2.0.0-alpha2] - 2021-03-12
 
 ### Changed
