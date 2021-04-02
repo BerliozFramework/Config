@@ -62,7 +62,8 @@ EOF;
         $this->assertEquals('value1', $adapter->get('qux'));
         $this->assertEquals('value', $adapter->get('section.foo'));
         $this->assertEquals('value2', $adapter->get('section.qux'));
-        $this->assertEquals(['bar' => 'value3'], $adapter->get('section2'));
+        $this->assertEquals(['bar' => 'value3', 'baz' => null], $adapter->get('section2'));
+        $this->assertEquals(null, $adapter->get('section2.baz'));
     }
 
     public function testLoadFileFailed()

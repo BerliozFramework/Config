@@ -10,6 +10,7 @@
   },
   "section2": {
     // Comment
-    "bar": "value3"
+    "bar": "value3",
+    "baz": null
   },
 }

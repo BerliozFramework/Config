@@ -136,7 +136,8 @@ class ConfigTest extends TestCase
                 ]
             ],
             "section2" => [
-                "bar" => "value"
+                "bar" => "value",
+                "baz" => null,
             ],
             "baz" => true
         ];

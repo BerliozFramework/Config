@@ -33,6 +33,7 @@ class ConfigFunctionTest extends TestCase
         $function = new ConfigFunction($config);
 
         $this->assertEquals('value', $function->execute('section.foo'));
+        $this->assertNull($function->execute('section2.baz'));
     }
 
     public function testExecuteFailed()

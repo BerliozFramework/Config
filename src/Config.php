@@ -100,6 +100,7 @@ class Config implements ConfigInterface
     public function get(string $key = null, mixed $default = null): mixed
     {
         $arrayValue = null;
+        $found = false;
 
         foreach ($this->configs as $config) {
             if (!$config->has($key)) {
@@ -108,6 +109,7 @@ class Config implements ConfigInterface
 
             // Get value
             $value = $config->get($key);
+            $found = true;
 
             // Not an array, so not necessary to merge or continue
             if (!is_array($value)) {
@@ -126,7 +128,11 @@ class Config implements ConfigInterface
             $arrayValue = array_merge($arrayValue ?? [], $value);
         }
 
-        $value = $arrayValue ?? $default;
+        if (false === $found) {
+            return $default;
+        }
+
+        $value = $arrayValue;
         $this->treatValue($value);
 
         return $value;
