@@ -9,6 +9,11 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 ### Added
 
 - New `ConfigInterface::getArrayCopy()` method to have an array representation of configuration
+- New `ConfigBridgeAdapter` adapter
+
+### Changed
+
+- `Config::addConfig()` now only accepts `AdapterInterface`
 
 ## [2.0.0-alpha2] - 2021-03-12
 
