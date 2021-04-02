@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Config;
 
 use ArrayObject;
+use Berlioz\Config\Adapter\AdapterInterface;
 use Berlioz\Config\ConfigFunction;
 
 /**
@@ -32,7 +33,7 @@ class Config implements ConfigInterface
     /**
      * Config constructor.
      *
-     * @param array $configs
+     * @param AdapterInterface[] $configs
      * @param array $variables
      */
     public function __construct(
@@ -85,9 +86,9 @@ class Config implements ConfigInterface
     /**
      * Add config.
      *
-     * @param ConfigInterface ...$config
+     * @param AdapterInterface ...$config
      */
-    public function addConfig(ConfigInterface ...$config): void
+    public function addConfig(AdapterInterface ...$config): void
     {
         array_unshift($this->configs, ...$config);
         usort($this->configs, fn($config1, $config2) => $config2->getPriority() <=> $config1->getPriority());
