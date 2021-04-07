@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file. This projec
 to [Semantic Versioning] (http://semver.org/). For change log format,
 use [Keep a Changelog] (http://keepachangelog.com/).
 
-## [2.0.0-alpha3] - In progress
+## [2.0.0-beta1] - In progress
 
 ### Added
 
@@ -19,6 +19,7 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 - Fixed null returned value
 - Fixed returning type of ConfigFunction to mixed
+- Fixed default value returned in `AbstractAdapter`
 
 ## [2.0.0-alpha2] - 2021-03-12
 

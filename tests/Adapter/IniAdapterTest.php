@@ -37,6 +37,7 @@ EOF;
         $this->assertEquals('value', $adapter->get('section.foo'));
         $this->assertEquals('value2', $adapter->get('section.qux'));
         $this->assertEquals(['bar' => 'value3'], $adapter->get('section2'));
+        $this->assertEquals('bar', $adapter->get('foo', 'bar'));
     }
 
     public function testLoadStringFailed()

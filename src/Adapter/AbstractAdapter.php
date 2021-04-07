@@ -33,7 +33,7 @@ abstract class AbstractAdapter implements AdapterInterface
      */
     public function get(string $key = null, mixed $default = null): mixed
     {
-        return b_array_traverse_get($this->configuration, $key);
+        return b_array_traverse_get($this->configuration, $key, $default);
     }
 
     /**
