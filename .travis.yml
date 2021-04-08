@@ -6,6 +6,7 @@ before_install:
   - sudo apt-get -qq update
 
 before_script:
+  - pecl install yaml
   - composer self-update
   - composer install
 
