@@ -82,8 +82,8 @@ class ConfigTest extends TestCase
         $config = new FakeConfig(
             [
                 new JsonAdapter(__DIR__ . '/config.json5', true, priority: 0),
-                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
                 new JsonAdapter(__DIR__ . '/config3.json5', true, priority: 10),
+                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
             ],
             variables: ['QUX' => 'QUX QUX QUX']
         );
@@ -91,8 +91,10 @@ class ConfigTest extends TestCase
         $this->assertEquals('ERASE ARRAY', $config->get('foo'));
         $this->assertEquals(['ERASE STRING'], $config->get('bar'));
         $this->assertEquals('QUX VALUE', $config->get('qux'));
-        $this->assertEquals('value', $config->get('section2.bar'));
-        $this->assertEquals(['QUX QUX QUX', 'QUX QUX QUX', 'value2', '{not}'], $config->get('section.qux'));
+        $this->assertEquals('value-test', $config->get('section2.bar'));
+        $this->assertSame(123456, $config->get('section2.qux'));
+        $this->assertEquals(['value2', '{not}', 'QUX QUX QUX', 'QUX QUX QUX'], $config->get('section.qux'));
+        $this->assertEquals(['bar' => 'value-test', 'baz' => 123456, 'qux' => 123456], $config->get('section2'));
         $this->assertSame(true, $config->get('baz'));
     }
 
@@ -101,8 +103,8 @@ class ConfigTest extends TestCase
         $config = new FakeConfig(
             [
                 new JsonAdapter(__DIR__ . '/config.json5', true, priority: 0),
-                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
                 new JsonAdapter(__DIR__ . '/config3.json5', true, priority: 10),
+                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
             ],
             variables: ['QUX' => 'QUX QUX QUX']
         );
@@ -117,8 +119,8 @@ class ConfigTest extends TestCase
         $config = new FakeConfig(
             [
                 new JsonAdapter(__DIR__ . '/config.json5', true, priority: 0),
-                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
                 new JsonAdapter(__DIR__ . '/config3.json5', true, priority: 10),
+                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
             ],
             variables: ['QUX' => 'QUX QUX QUX']
         );
@@ -136,8 +138,9 @@ class ConfigTest extends TestCase
                 ]
             ],
             "section2" => [
-                "bar" => "value",
-                "baz" => null,
+                "bar" => "value-test",
+                "baz" => 123456,
+                "qux" => 123456,
             ],
             "baz" => true
         ];

@@ -103,7 +103,7 @@ class Config implements ConfigInterface
         $found = false;
 
         foreach ($this->configs as $config) {
-            if (!$config->has($key)) {
+            if (false === $config->has($key)) {
                 continue;
             }
 
@@ -125,7 +125,7 @@ class Config implements ConfigInterface
                 return $value;
             }
 
-            $arrayValue = array_merge($arrayValue ?? [], $value);
+            $arrayValue = b_array_merge_recursive($value, $arrayValue ?? []);
         }
 
         if (false === $found) {
@@ -155,12 +155,17 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function getArrayCopy(): array
+    public function getArrayCopy(bool $compiled = false): array
     {
         $configArrays = array_map(fn(ConfigInterface $config) => $config->getArrayCopy(), $this->configs);
         rsort($configArrays);
         $configArray = b_array_merge_recursive(...$configArrays);
         unset($configArrays);
+
+        if (false === $compiled) {
+            return $configArray;
+        }
+
         $this->treatValue($configArray);
 
         return $configArray;
@@ -186,27 +191,33 @@ class Config implements ConfigInterface
             return;
         }
 
-        // Not to treat
-        if (!str_starts_with($value, static::ENCAPSULATION_START) &&
-            !str_ends_with($value, static::ENCAPSULATION_END)) {
+        $matches = [];
+        if (!preg_match_all(
+                '#{\s*(?:=|(?<function>\w+)\s*:\s*)(?<value>[^}]+)\s*}#',
+                $value,
+                $matches,
+                PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL
+            )) {
             return;
         }
 
-        // If it's an asked value {= varName}
-        if (str_starts_with($value, static::ENCAPSULATION_START . '=')) {
-            $value = $this->functions->execute('var', trim(substr($value, 2, -1)));
+        if (empty($matches)) {
             return;
         }
 
-        $tmpValue = substr($value, 1, -1);
-        $tmpValue = explode(':', $tmpValue, 2);
-        $tmpValue = array_map('trim', $tmpValue);
+        $shift = 0;
+        foreach ($matches[0] as $key => $match) {
+            $function = $matches['function'][$key][0] ?? 'var';
+            $result = $this->functions->execute($function, trim($matches['value'][$key][0]));
 
-        // Not to treat
-        if (2 !== count($tmpValue)) {
-            return;
+            if (strlen($match[0]) == strlen($value)) {
+                $value = $result;
+                return;
+            }
+
+            $result = (string)$result;
+            $value = substr_replace($value, $result, $match[1] + $shift, $length = strlen($match[0]));
+            $shift = strlen($result) - $length;
         }
-
-        $value = $this->functions->execute($tmpValue[0], $tmpValue[1]);
     }
 }

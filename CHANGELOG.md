@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file. This projec
 to [Semantic Versioning] (http://semver.org/). For change log format,
 use [Keep a Changelog] (http://keepachangelog.com/).
 
-## [2.0.0-beta2] - In progress
+## [2.0.0-beta2] - 2021-04-14
 
 ### Added
 
 - New `YamlAdapter` adapter
+- Add parameter `$compiled` to `Config::getArrayCopy()` to get the compiled version
+
+### Fixed
+
+- Fixed multiple function calls in a value, or concatenation of function result and string
+- Fixed way of merge from multiple configuration file
 
 ## [2.0.0-beta1] - 2021-04-07
 

@@ -9,6 +9,8 @@
     ]
   },
   "section2": {
-    "bar": "{config:section.foo}",
+    "bar": "{config:section.foo}-test",
+    "baz": 123456,
+    "qux": "{config:section2.baz}"
   }
 }
