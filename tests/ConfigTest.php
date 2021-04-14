@@ -131,6 +131,40 @@ class ConfigTest extends TestCase
             "section" => [
                 "foo" => "value",
                 "qux" => [
+                    "{var:QUX}",
+                    "{= QUX}",
+                    "value2",
+                    "{not}",
+                ]
+            ],
+            "section2" => [
+                "bar" => "{config:section.foo}-test",
+                "baz" => 123456,
+                "qux" => "{config:section2.baz}",
+            ],
+            "baz" => true
+        ];
+
+        $this->assertEquals($array, $config->getArrayCopy());
+    }
+
+    public function testGetArrayCopy_compiled()
+    {
+        $config = new FakeConfig(
+            [
+                new JsonAdapter(__DIR__ . '/config.json5', true, priority: 0),
+                new JsonAdapter(__DIR__ . '/config3.json5', true, priority: 10),
+                new JsonAdapter(__DIR__ . '/config2.json5', true, priority: 1),
+            ],
+            variables: ['QUX' => 'QUX QUX QUX']
+        );
+        $array = [
+            "foo" => "ERASE ARRAY",
+            "bar" => ["ERASE STRING"],
+            "qux" => "QUX VALUE",
+            "section" => [
+                "foo" => "value",
+                "qux" => [
                     "QUX QUX QUX",
                     "QUX QUX QUX",
                     "value2",
@@ -145,6 +179,6 @@ class ConfigTest extends TestCase
             "baz" => true
         ];
 
-        $this->assertEquals($array, $config->getArrayCopy());
+        $this->assertEquals($array, $config->getArrayCopy(true));
     }
 }
