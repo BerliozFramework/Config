@@ -13,6 +13,7 @@
 namespace Berlioz\Config\Tests;
 
 use ArrayObject;
+use Berlioz\Config\Adapter\ArrayAdapter;
 use Berlioz\Config\Adapter\JsonAdapter;
 use Berlioz\Config\Config;
 use Berlioz\Config\ConfigFunction\EnvFunction;
@@ -180,5 +181,12 @@ class ConfigTest extends TestCase
         ];
 
         $this->assertEquals($array, $config->getArrayCopy(true));
+    }
+
+    public function testGetArrayCopy_empty()
+    {
+        $config = new FakeConfig();
+
+        $this->assertEquals([], $config->getArrayCopy(true));
     }
 }

@@ -157,6 +157,10 @@ class Config implements ConfigInterface
      */
     public function getArrayCopy(bool $compiled = false): array
     {
+        if (empty($this->configs)) {
+            return [];
+        }
+
         $configArrays = array_map(fn(ConfigInterface $config) => $config->getArrayCopy(), $this->configs);
         rsort($configArrays);
         $configArray = b_array_merge_recursive(...$configArrays);
@@ -193,11 +197,11 @@ class Config implements ConfigInterface
 
         $matches = [];
         if (!preg_match_all(
-                '#{\s*(?:=|(?<function>\w+)\s*:\s*)(?<value>[^}]+)\s*}#',
-                $value,
-                $matches,
-                PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL
-            )) {
+            '#{\s*(?:=|(?<function>\w+)\s*:\s*)(?<value>[^}]+)\s*}#',
+            $value,
+            $matches,
+            PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL
+        )) {
             return;
         }
 
