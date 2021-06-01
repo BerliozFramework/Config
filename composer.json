@@ -23,7 +23,7 @@
   },
   "require": {
     "php": "^8.0",
-    "berlioz/helpers": "^1.0",
+    "berlioz/helpers": "^1.2",
     "colinodell/json5": "^2.2"
   },
   "require-dev": {

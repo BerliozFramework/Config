@@ -95,7 +95,7 @@ class ConfigTest extends TestCase
         $this->assertEquals('value-test', $config->get('section2.bar'));
         $this->assertSame(123456, $config->get('section2.qux'));
         $this->assertEquals(['value2', '{not}', 'QUX QUX QUX', 'QUX QUX QUX'], $config->get('section.qux'));
-        $this->assertEquals(['bar' => 'value-test', 'baz' => 123456, 'qux' => 123456], $config->get('section2'));
+        $this->assertEquals(['bar' => 'value-test', 'baz' => 123456, 'qux' => 123456, '123' => 'FOO'], $config->get('section2'));
         $this->assertSame(true, $config->get('baz'));
     }
 
@@ -142,6 +142,7 @@ class ConfigTest extends TestCase
                 "bar" => "{config:section.foo}-test",
                 "baz" => 123456,
                 "qux" => "{config:section2.baz}",
+                "123" => "FOO",
             ],
             "baz" => true
         ];
@@ -176,6 +177,7 @@ class ConfigTest extends TestCase
                 "bar" => "value-test",
                 "baz" => 123456,
                 "qux" => 123456,
+                "123" => "FOO",
             ],
             "baz" => true
         ];

@@ -6,6 +6,10 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 ## [2.0.0-beta3] - In progress
 
+### Changed
+
+- Bump dependency version of `berlioz/helpers` package to 1.2
+
 ### Fixed
 
 - Fixed `Config::getArrayCopy()` with no config
