@@ -197,7 +197,7 @@ class Config implements ConfigInterface
 
         $matches = [];
         if (!preg_match_all(
-            '#{\s*(?:=|(?<function>\w+)\s*:\s*)(?<value>[^}]+)\s*}#',
+            '#' . static::ENCAPSULATION_START . '\s*(?:=|(?<function>\w+)\s*:\s*)(?<value>[^}]+)\s*' . static::ENCAPSULATION_END . '#',
             $value,
             $matches,
             PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL
