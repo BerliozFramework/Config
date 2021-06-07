@@ -162,7 +162,7 @@ class Config implements ConfigInterface
         }
 
         $configArrays = array_map(fn(ConfigInterface $config) => $config->getArrayCopy(), $this->configs);
-        rsort($configArrays);
+        $configArrays = array_reverse($configArrays);
         $configArray = b_array_merge_recursive(...$configArrays);
         unset($configArrays);
 

@@ -13,6 +13,7 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 ### Fixed
 
 - Fixed `Config::getArrayCopy()` with no config
+- Fixed reverse of configs in `Config::getArrayCopy()`
 
 ## [2.0.0-beta2] - 2021-04-14
 
