@@ -132,10 +132,10 @@ class ConfigTest extends TestCase
             "section" => [
                 "foo" => "value",
                 "qux" => [
-                    "{var:QUX}",
-                    "{= QUX}",
                     "value2",
                     "{not}",
+                    "{var:QUX}",
+                    "{= QUX}",
                 ]
             ],
             "section2" => [
@@ -167,10 +167,10 @@ class ConfigTest extends TestCase
             "section" => [
                 "foo" => "value",
                 "qux" => [
-                    "QUX QUX QUX",
-                    "QUX QUX QUX",
                     "value2",
                     "{not}",
+                    "QUX QUX QUX",
+                    "QUX QUX QUX",
                 ]
             ],
             "section2" => [
