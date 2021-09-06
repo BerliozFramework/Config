@@ -28,9 +28,11 @@
   },
   "require-dev": {
     "ext-yaml": "*",
-    "phpunit/phpunit": "^9.3"
+    "phpunit/phpunit": "^9.5",
+    "symfony/yaml": "^5.0"
   },
   "suggest": {
-    "ext-yaml": "To use YamlAdapter"
+    "ext-yaml": "To use YamlAdapter",
+    "symfony/yaml": "To use YamlAdapter"
   }
 }

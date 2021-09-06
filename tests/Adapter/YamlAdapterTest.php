@@ -18,7 +18,20 @@ use PHPUnit\Framework\TestCase;
 
 class YamlAdapterTest extends TestCase
 {
-    public function testLoadString()
+    public function parserProvider(): array
+    {
+        return [
+            [YamlAdapter::PARSER_AUTO],
+            [YamlAdapter::PARSER_EXTENSION],
+            [YamlAdapter::PARSER_SYMFONY],
+        ];
+    }
+
+    /**
+     * @dataProvider parserProvider
+     * @throws ConfigException
+     */
+    public function testLoadString(int $parser)
     {
         $yml = <<<EOF
 qux: value1
@@ -31,7 +44,7 @@ section2:
   bar: value3
 EOF;
 
-        $adapter = new YamlAdapter($yml);
+        $adapter = new YamlAdapter($yml, forceParser: $parser);
 
         $this->assertEquals('value1', $adapter->get('qux'));
         $this->assertEquals('value', $adapter->get('section.foo'));
@@ -40,7 +53,11 @@ EOF;
         $this->assertEquals('bar', $adapter->get('foo', 'bar'));
     }
 
-    public function testLoadStringFailed()
+    /**
+     * @dataProvider parserProvider
+     * @throws ConfigException
+     */
+    public function testLoadStringFailed(int $parser)
     {
         $this->expectException(ConfigException::class);
 
@@ -48,12 +65,16 @@ EOF;
 &
 qux: value1
 EOF;
-        new YamlAdapter($yml);
+        new YamlAdapter($yml, forceParser: $parser);
     }
 
-    public function testLoadFile()
+    /**
+     * @dataProvider parserProvider
+     * @throws ConfigException
+     */
+    public function testLoadFile(int $parser)
     {
-        $adapter = new YamlAdapter(__DIR__ . '/config.yml', true);
+        $adapter = new YamlAdapter(__DIR__ . '/config.yml', true, forceParser: $parser);
 
         $this->assertEquals('value1', $adapter->get('qux'));
         $this->assertEquals('value', $adapter->get('section.foo'));
@@ -61,14 +82,22 @@ EOF;
         $this->assertEquals(['bar' => 'value3'], $adapter->get('section2'));
     }
 
-    public function testLoadFileFailed()
+    /**
+     * @dataProvider parserProvider
+     * @throws ConfigException
+     */
+    public function testLoadFileFailed(int $parser)
     {
         $this->expectException(ConfigException::class);
 
-        new YamlAdapter(__DIR__ . '/config-failed.yml', true);
+        new YamlAdapter(__DIR__ . '/config-failed.yml', true, forceParser: $parser);
     }
 
-    public function testGetArrayCopy()
+    /**
+     * @dataProvider parserProvider
+     * @throws ConfigException
+     */
+    public function testGetArrayCopy(int $parser)
     {
         $adapter = new YamlAdapter(
             <<<EOF
@@ -80,7 +109,8 @@ section:
 
 section2:
   bar: value3
-EOF
+EOF,
+            forceParser: $parser
         );
         $array = [
             "qux" => "value1",
