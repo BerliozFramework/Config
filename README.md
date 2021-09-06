@@ -2,7 +2,7 @@
 
 [![Latest Version](https://img.shields.io/packagist/v/berlioz/config.svg?style=flat-square)](https://github.com/BerliozFramework/Config/releases)
 [![Software license](https://img.shields.io/github/license/BerliozFramework/Config.svg?style=flat-square)](https://github.com/BerliozFramework/Config/blob/1.x/LICENSE)
-[![Build Status](https://img.shields.io/travis/com/BerliozFramework/Config/1.x.svg?style=flat-square)](https://travis-ci.com/BerliozFramework/Config)
+[![Build Status](https://img.shields.io/github/workflow/status/BerliozFramework/Config/Tests/1.x.svg?style=flat-square)](https://github.com/BerliozFramework/Config/actions/workflows/tests.yml?query=branch%3A1.x)
 [![Quality Grade](https://img.shields.io/codacy/grade/f290647a1f5143ec8299ecea9b83d6b1/1.x.svg?style=flat-square)](https://www.codacy.com/manual/BerliozFramework/Config)
 [![Total Downloads](https://img.shields.io/packagist/dt/berlioz/config.svg?style=flat-square)](https://packagist.org/packages/berlioz/config)
 
