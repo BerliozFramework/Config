@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file. This projec
 to [Semantic Versioning] (http://semver.org/). For change log format,
 use [Keep a Changelog] (http://keepachangelog.com/).
 
-## [2.0.0-beta5] - In progress
+## [2.0.0] - 2021-09-08
 
 ### Added
 
@@ -14,7 +14,7 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 ### Changed
 
-- Use constants to define encapsulation characters of functions 
+- Use constants to define encapsulation characters of functions
 
 ### Fixed
 
