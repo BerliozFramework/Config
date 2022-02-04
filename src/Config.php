@@ -17,6 +17,7 @@ namespace Berlioz\Config;
 use ArrayObject;
 use Berlioz\Config\Adapter\AdapterInterface;
 use Berlioz\Config\ConfigFunction;
+use Berlioz\Config\Exception\ConfigException;
 
 /**
  * Class Config.
@@ -92,6 +93,21 @@ class Config implements ConfigInterface
     {
         array_unshift($this->configs, ...$config);
         usort($this->configs, fn($config1, $config2) => $config2->getPriority() <=> $config1->getPriority());
+    }
+
+    /**
+     * Get value or fail.
+     *
+     * Key given in parameter must be in format: key.key2.key3
+     *
+     * @param string $key
+     *
+     * @return mixed
+     * @throws ConfigException
+     */
+    public function getOrFail(string $key): mixed
+    {
+        return $this->get($key) ?: throw new ConfigException(sprintf('Missing configuration value at "%s"', $key));
     }
 
     /**

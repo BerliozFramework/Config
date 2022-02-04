@@ -13,10 +13,10 @@
 namespace Berlioz\Config\Tests;
 
 use ArrayObject;
-use Berlioz\Config\Adapter\ArrayAdapter;
 use Berlioz\Config\Adapter\JsonAdapter;
 use Berlioz\Config\Config;
 use Berlioz\Config\ConfigFunction\EnvFunction;
+use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Config\Tests\ConfigFunction\FakeFunction;
 use PHPUnit\Framework\TestCase;
 
@@ -78,6 +78,31 @@ class ConfigTest extends TestCase
         $this->assertSame(array_merge([$aPrioritizedConfig], $configs, [$aDefaultConfig]), $config->all());
     }
 
+    public function testGetOrFail_valid()
+    {
+        $config = new Config([new JsonAdapter(__DIR__ . '/config.json5', true)]);
+
+        $this->assertEquals('STRING', $config->getOrFail('bar'));
+    }
+
+    public function testGetOrFail_empty()
+    {
+        $this->expectException(ConfigException::class);
+        $this->expectDeprecationMessage('Missing configuration value at "section2.baz"');
+
+        $config = new Config([new JsonAdapter(__DIR__ . '/config.json5', true)]);
+        $config->getOrFail('section2.baz');
+    }
+
+    public function testGetOrFail_unknown()
+    {
+        $this->expectException(ConfigException::class);
+        $this->expectDeprecationMessage('Missing configuration value at "baz.unknown.foo"');
+
+        $config = new Config([new JsonAdapter(__DIR__ . '/config.json5', true)]);
+        $config->getOrFail('baz.unknown.foo');
+    }
+
     public function testGet()
     {
         $config = new FakeConfig(
@@ -95,7 +120,10 @@ class ConfigTest extends TestCase
         $this->assertEquals('value-test', $config->get('section2.bar'));
         $this->assertSame(123456, $config->get('section2.qux'));
         $this->assertEquals(['value2', '{not}', 'QUX QUX QUX', 'QUX QUX QUX'], $config->get('section.qux'));
-        $this->assertEquals(['bar' => 'value-test', 'baz' => 123456, 'qux' => 123456, '123' => 'FOO'], $config->get('section2'));
+        $this->assertEquals(
+            ['bar' => 'value-test', 'baz' => 123456, 'qux' => 123456, '123' => 'FOO'],
+            $config->get('section2')
+        );
         $this->assertSame(true, $config->get('baz'));
     }
 
