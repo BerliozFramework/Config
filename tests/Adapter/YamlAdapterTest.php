@@ -16,6 +16,9 @@ use Berlioz\Config\Adapter\YamlAdapter;
 use Berlioz\Config\Exception\ConfigException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @requires extension yaml
+ */
 class YamlAdapterTest extends TestCase
 {
     public function parserProvider(): array
