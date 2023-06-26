@@ -53,11 +53,11 @@ class ConfigTest extends TestCase
     {
         $config = new FakeConfig();
 
-        $this->assertCount(4, $config->getFunctions()->all());
+        $this->assertCount(5, $config->getFunctions()->all());
 
         $config->addFunction(new FakeFunction(), new EnvFunction());
 
-        $this->assertCount(5, $config->getFunctions()->all());
+        $this->assertCount(6, $config->getFunctions()->all());
     }
 
     public function testAddConfig()

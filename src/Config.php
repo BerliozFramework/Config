@@ -49,6 +49,7 @@ class Config implements ConfigInterface
                 new ConfigFunction\ConfigFunction($this),
                 new ConfigFunction\ConstantFunction(),
                 new ConfigFunction\EnvFunction(),
+                new ConfigFunction\FileFunction(),
                 new ConfigFunction\VarFunction($this),
             ]
         );
