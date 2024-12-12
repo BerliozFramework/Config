@@ -2,5 +2,6 @@
   "@extends": "config.json",
   "debug": true,
   "log": "alert",
-  "action": "%actionTest:5%"
+  "action": "%actionTest:5%",
+  "file": "%file:./file_contents.txt%"
 }

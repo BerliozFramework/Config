@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Config;
 
 use Berlioz\Config\Exception\ConfigException;
+use Berlioz\Config\Exception\NotFoundException;
 use Exception;
 
 /**
@@ -117,7 +118,10 @@ class ExtendedJsonConfig extends JsonConfig
 
         $matches = [];
         if (preg_match(
-                sprintf('/^\s*%1$s(?<action>[\w\-.]+)\:(?<var>[\w\-_.:,\\\\\s]+)%1$s\s*$/i', preg_quote(self::TAG)),
+                sprintf(
+                    '/^\s*%1$s(?<action>[\w\-.]+)\:(?<var>[\w\-_.:,\/\\\\\s]+)%1$s\s*$/i',
+                    preg_quote(self::TAG)
+                ),
                 $value,
                 $matches
             ) != 1) {
@@ -143,6 +147,15 @@ class ExtendedJsonConfig extends JsonConfig
                     break;
                 case 'env':
                     $value = getenv($matches['var']);
+                    break;
+                case 'file':
+                    $currentDir = getcwd();
+                    chdir($baseDirectory);
+                    $value = @file_get_contents($matches['var']);
+                    if (false === $value) {
+                        throw new NotFoundException(sprintf('Included file "%s" not found', $matches['var']));
+                    }
+                    chdir($currentDir);
                     break;
                 case 'const':
                 case 'constant':

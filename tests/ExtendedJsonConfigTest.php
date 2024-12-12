@@ -124,6 +124,8 @@ class ExtendedJsonConfigTest extends TestCase
             }
         );
         $config = new ExtendedJsonConfig(sprintf('%s%s', __DIR__, '/files/config.extended2.json'), true);
+
         $this->assertEquals(10, $config->get('action'));
+        $this->assertEquals('BAR', $config->get('file'));
     }
 }

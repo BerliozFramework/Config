@@ -2,8 +2,8 @@
 
 [![Latest Version](https://img.shields.io/packagist/v/berlioz/config.svg?style=flat-square)](https://github.com/BerliozFramework/Config/releases)
 [![Software license](https://img.shields.io/github/license/BerliozFramework/Config.svg?style=flat-square)](https://github.com/BerliozFramework/Config/blob/1.x/LICENSE)
-[![Build Status](https://img.shields.io/github/workflow/status/BerliozFramework/Config/Tests/1.x.svg?style=flat-square)](https://github.com/BerliozFramework/Config/actions/workflows/tests.yml?query=branch%3A1.x)
-[![Quality Grade](https://img.shields.io/codacy/grade/f290647a1f5143ec8299ecea9b83d6b1/1.x.svg?style=flat-square)](https://www.codacy.com/manual/BerliozFramework/Config)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/BerliozFramework/Config/tests.yml?branch=1.x&style=flat-square)](https://github.com/BerliozFramework/Config/actions/workflows/tests.yml?query=branch%3A1.x)
+[![Quality Grade](https://img.shields.io/codacy/grade/f290647a1f5143ec8299ecea9b83d6b1/1.x.svg?style=flat-square)](https://www.codacy.com/gh/BerliozFramework/Config)
 [![Total Downloads](https://img.shields.io/packagist/dt/berlioz/config.svg?style=flat-square)](https://packagist.org/packages/berlioz/config)
 
 **Berlioz Configuration** is a PHP library to manage your configuration files.
@@ -108,6 +108,7 @@ Just to do actions like include or extends JSON files.
 * Extends a file: `%extends:filename.json, filename2.json, filename3.json%`
 * Replace by an env variable: `%env:VAR_NAME%`
 * Replace by a constant: `%const:VAR_NAME%` or `%constant:VAR_NAME%` 
+* Replace by a file contents: `%file:/my/file.txt%` 
 * Allow inline comments : `// My comment` (comment must be alone on a line) 
 
 You can define your own actions with static method `ExtendedJsonConfig::addAction(string $name, callable $callback)`.
