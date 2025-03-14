@@ -114,7 +114,7 @@ class Config implements ConfigInterface
     /**
      * @inheritDoc
      */
-    public function get(string $key = null, mixed $default = null): mixed
+    public function get(?string $key = null, mixed $default = null): mixed
     {
         $arrayValue = null;
         $found = false;

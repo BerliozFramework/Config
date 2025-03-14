@@ -33,7 +33,7 @@ interface ConfigInterface
      * @return mixed
      * @throws ConfigException
      */
-    public function get(string $key = null, mixed $default = null): mixed;
+    public function get(?string $key = null, mixed $default = null): mixed;
 
     /**
      * Key exists ?

@@ -31,7 +31,7 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * @inheritDoc
      */
-    public function get(string $key = null, mixed $default = null): mixed
+    public function get(?string $key = null, mixed $default = null): mixed
     {
         return b_array_traverse_get($this->configuration, $key, $default);
     }
